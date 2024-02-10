@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { Dictionary } from 'yomichan-dict-builder';
 import { SingleBar } from 'cli-progress';
-import { articleToTermEntry } from './articleToTermEntry';
+import { articleToTermEntry } from './helpers/articleToTermEntry';
+import { getPackageVersion } from './helpers/getPackageVersion';
 
 const prisma = new PrismaClient();
 
@@ -36,7 +37,7 @@ async function main() {
     url: `https://github.com/MarvNC/pixiv-yomitan`,
     // TODO
     title: `Pixiv [${latestDateShort}]`,
-    revision: `1`,
+    revision: getPackageVersion(),
     description: `Article summaries scraped from pixiv, ${allArticles.length} articles included`,
   });
 
