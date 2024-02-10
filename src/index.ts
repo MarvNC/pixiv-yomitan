@@ -1,12 +1,9 @@
-import { PrismaClient } from '@prisma/client';
 import { Dictionary } from 'yomichan-dict-builder';
 import { SingleBar } from 'cli-progress';
 import { articleToTermEntry } from './helpers/articleToTermEntry';
 import { getPackageVersion } from './helpers/getPackageVersion';
 import { isValidArticle } from './helpers/isValidArticle';
 import { getDatabaseData } from './helpers/getDatabaseData';
-
-export const prisma = new PrismaClient();
 
 async function main() {
   const { latestDateShort, allArticles } = await getDatabaseData();
@@ -56,12 +53,4 @@ async function main() {
   console.log(`Exported ${stats.termCount} terms`);
 }
 
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+main();

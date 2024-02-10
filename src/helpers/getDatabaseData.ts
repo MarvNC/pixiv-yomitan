@@ -1,4 +1,5 @@
-import { prisma } from '..';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
 export async function getDatabaseData() {
   const allArticles = await prisma.pixivArticle.findMany();
