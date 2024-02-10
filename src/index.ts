@@ -8,6 +8,7 @@ const prisma = new PrismaClient();
 async function main() {
   const allArticles = await prisma.pixivArticle.findMany();
   console.log(`Found ${allArticles.length} articles`);
+  await prisma.$disconnect();
 
   const dictionary = new Dictionary({
     fileName: `pixiv.zip`,
@@ -33,7 +34,7 @@ async function main() {
   progressBar.start(allArticles.length, 0);
   for (const article of allArticles) {
     const entry = articleToTermEntry(article);
-    dictionary.addTerm(entry.build());
+    await dictionary.addTerm(entry.build());
     progressBar.increment();
   }
 
