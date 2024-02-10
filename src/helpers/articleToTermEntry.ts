@@ -19,8 +19,18 @@ const parentArticleSymbol = '⬆️';
 function createDetailedDefinition(article: PixivArticle): DetailedDefinition {
   const scList: StructuredContentNode = [];
   if (article.parent) {
-    scList.push(createUlElement(article.parent, parentArticleSymbol));
+    scList.push(
+      createUlElement({
+        content: {
+          tag: 'a',
+          content: article.parent,
+          href: `?query=${article.parent}&wildcards=off`,
+        },
+        listPrefix: parentArticleSymbol,
+      }),
+    );
   }
+  scList.push(createUlElement({ content: article.summary }));
   // scList.push({
   //   tag: 'span',
   //   content: `${viewsLabel}${article.view_count} ${illustrationCountLabel}${article.illust_count}`,
@@ -31,10 +41,13 @@ function createDetailedDefinition(article: PixivArticle): DetailedDefinition {
   };
 }
 
-function createUlElement(
-  content: StructuredContentNode,
-  listPrefix: string,
-): StructuredContentNode {
+function createUlElement({
+  content,
+  listPrefix,
+}: {
+  content: StructuredContentNode;
+  listPrefix?: string;
+}): StructuredContentNode {
   const element: StructuredContentNode = {
     tag: 'ul',
     content: {
