@@ -5,6 +5,7 @@ import { isDevMode } from './helpers/isDevMode';
 import { getPackageVersion } from './helpers/getPackageVersion';
 import { isValidArticle } from './helpers/isValidArticle';
 import { getDatabaseData } from './helpers/getDatabaseData';
+import { addAllAssetsToDictionary } from './yomitan/addAllAssetsToDictionary';
 
 (async () => {
   const devMode = isDevMode();
@@ -20,6 +21,8 @@ import { getDatabaseData } from './helpers/getDatabaseData';
   const dictionary = new Dictionary({
     fileName: `Pixiv_${latestDateShort}.zip`,
   });
+
+  await addAllAssetsToDictionary(dictionary);
 
   dictionary.setIndex({
     author: `Pixiv contributors, Marv`,
