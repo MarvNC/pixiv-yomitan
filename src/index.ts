@@ -5,7 +5,7 @@ import { getPackageVersion } from './helpers/getPackageVersion';
 import { isValidArticle } from './helpers/isValidArticle';
 import { getDatabaseData } from './helpers/getDatabaseData';
 
-async function main() {
+(async () => {
   const { latestDateShort, allArticles } = await getDatabaseData();
 
   const dictionary = new Dictionary({
@@ -51,6 +51,4 @@ async function main() {
   console.log(`Exporting dictionary...`);
   const stats = await dictionary.export('dist');
   console.log(`Exported ${stats.termCount} terms`);
-}
-
-main();
+})();

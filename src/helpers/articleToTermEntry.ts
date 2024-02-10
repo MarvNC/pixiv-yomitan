@@ -1,21 +1,51 @@
-import { normalizeReading } from 'japanese-furigana-normalize';
 import { PixivArticle } from '@prisma/client';
 import { TermEntry } from 'yomichan-dict-builder';
+import { getArticleProcessedReading } from './getArticleProcessedReading';
+import {
+  DetailedDefinition,
+  StructuredContentNode,
+} from 'yomichan-dict-builder/dist/types/yomitan/termbank';
 
 export function articleToTermEntry(article: PixivArticle): TermEntry {
   const entry = new TermEntry(article.tag_name);
-  entry.setReading(getReading(article));
+  entry.setReading(getArticleProcessedReading(article));
+  entry.addDetailedDefinition(createDetailedDefinition(article));
   return entry;
 }
 
-function getReading(article: PixivArticle): string {
-  if (!article.reading) {
-    return '';
+const viewsLabel = '閲覧数';
+const illustrationCountLabel = '作品数';
+const parentArticleSymbol = '⬆️';
+function createDetailedDefinition(article: PixivArticle): DetailedDefinition {
+  const scList: StructuredContentNode = [];
+  if (article.parent) {
+    scList.push(createUlElement(article.parent, parentArticleSymbol));
   }
-  // ー is a common placeholder for missing readings
-  if (article.reading === 'ー') {
-    return '';
+  // scList.push({
+  //   tag: 'span',
+  //   content: `${viewsLabel}${article.view_count} ${illustrationCountLabel}${article.illust_count}`,
+  // });
+  return {
+    type: 'structured-content',
+    content: scList,
+  };
+}
+
+function createUlElement(
+  content: StructuredContentNode,
+  listPrefix: string,
+): StructuredContentNode {
+  const element: StructuredContentNode = {
+    tag: 'ul',
+    content: {
+      tag: 'li',
+      content,
+    },
+  };
+  if (listPrefix) {
+    element.style = {
+      listStyleType: `"${listPrefix}"`,
+    };
   }
-  const normalizedReading = normalizeReading(article.tag_name, article.reading);
-  return normalizedReading;
+  return element;
 }
