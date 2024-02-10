@@ -1,0 +1,21 @@
+{
+  "name": "pixiv-yomitan",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "MarvNC",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "japanese-furigana-normalize": "^1.0.2"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5"
+  }
+}
