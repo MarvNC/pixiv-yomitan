@@ -68,17 +68,11 @@ export function createDetailedDefinition(
       pixiv: 'stats',
     },
     content: [
+      `${viewsLabel}: ${article.view_count} | `,
       {
-        tag: 'span',
-        content: `${viewsLabel}: ${article.view_count}`,
-      },
-      {
-        tag: 'span',
-        content: {
-          tag: 'a',
-          href: `https://www.pixiv.net/tags.php?tag=${article.tag_name}`,
-          content: `${illustrationCountLabel}: ${article.illust_count}`,
-        },
+        tag: 'a',
+        href: `https://www.pixiv.net/tags.php?tag=${article.tag_name}`,
+        content: `${illustrationCountLabel}: ${article.illust_count}`,
       },
     ],
   });
