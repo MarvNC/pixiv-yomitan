@@ -38,7 +38,9 @@ async function main() {
     // TODO
     title: `Pixiv [${latestDateShort}]`,
     revision: getPackageVersion(),
-    description: `Article summaries scraped from pixiv, ${allArticles.length} articles included`,
+    description: `Article summaries from the Pixiv encyclopedia (ピクシブ百科事典), ${allArticles.length} articles included.
+    Pixiv dumps used to build this found at https://github.com/MarvNC/pixiv-dump.
+    Built with https://github.com/MarvNC/yomichan-dict-builder.`,
   });
 
   const progressBar = new SingleBar({
