@@ -27,7 +27,7 @@ export function createDetailedDefinition(
         {
           tag: 'a',
           content: article.parent,
-          href: `?query=${article.parent}&wildcards=off`,
+          href: `?query=${article.parent}`,
         },
         {
           tag: 'span',
