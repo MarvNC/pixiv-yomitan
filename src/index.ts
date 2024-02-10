@@ -1,12 +1,21 @@
 import { Dictionary } from 'yomichan-dict-builder';
 import { SingleBar } from 'cli-progress';
 import { articleToTermEntry } from './yomitan/articleToTermEntry';
+import { isDevMode } from './helpers/isDevMode';
 import { getPackageVersion } from './helpers/getPackageVersion';
 import { isValidArticle } from './helpers/isValidArticle';
 import { getDatabaseData } from './helpers/getDatabaseData';
 
 (async () => {
+  const devMode = isDevMode();
+
   const { latestDateShort, allArticles } = await getDatabaseData();
+
+  // If dev mode, limit to 5 articles
+  if (devMode) {
+    console.log(`Running in dev mode, limiting to 5 articles.`);
+    allArticles.splice(5);
+  }
 
   const dictionary = new Dictionary({
     fileName: `Pixiv_${latestDateShort}.zip`,
