@@ -41,7 +41,9 @@ export function createDetailedDefinition(
     });
   }
   // Summary
-  scList.push(createUlElement({ content: article.summary }));
+  scList.push(
+    createUlElement({ content: article.summary, data: { pixiv: 'summary' } }),
+  );
   // Read more link
   scList.push(
     createUlElement({
@@ -49,6 +51,9 @@ export function createDetailedDefinition(
         tag: 'a',
         href: `https://dic.pixiv.net/a/${article.tag_name}`,
         content: readMoreLabel,
+      },
+      data: {
+        pixiv: 'read-more-link',
       },
       listPrefix: readMoreEmoji,
     }),
