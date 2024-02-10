@@ -58,10 +58,30 @@ export function createDetailedDefinition(
       listPrefix: readMoreEmoji,
     }),
   );
-  // scList.push({
-  //   tag: 'span',
-  //   content: `${viewsLabel}${article.view_count} ${illustrationCountLabel}${article.illust_count}`,
-  // });
+  // Stats
+  scList.push({
+    tag: 'div',
+    style: {
+      textAlign: 'right',
+    },
+    data: {
+      pixiv: 'stats',
+    },
+    content: [
+      {
+        tag: 'span',
+        content: `${viewsLabel}: ${article.view_count}`,
+      },
+      {
+        tag: 'span',
+        content: {
+          tag: 'a',
+          href: `https://www.pixiv.net/tags.php?tag=${article.tag_name}`,
+          content: `${illustrationCountLabel}: ${article.illust_count}`,
+        },
+      },
+    ],
+  });
   return {
     type: 'structured-content',
     content: scList,
