@@ -7,7 +7,6 @@ import { createUlElement } from './createUlElement';
 
 const viewsLabel = '閲覧数';
 const illustrationCountLabel = '作品数';
-const readMoreLabel = '続きを読む';
 const readMoreEmoji = '⧉';
 export function createDetailedDefinition(
   article: PixivArticle,
@@ -50,7 +49,7 @@ export function createDetailedDefinition(
       content: {
         tag: 'a',
         href: `https://dic.pixiv.net/a/${article.tag_name}`,
-        content: readMoreLabel,
+        content: 'pixivで続きを読む',
       },
       data: {
         pixiv: 'read-more-link',
