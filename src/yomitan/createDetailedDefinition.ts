@@ -41,19 +41,24 @@ export function createDetailedDefinition(
     createUlElement({ content: article.summary, data: { pixiv: 'summary' } }),
   );
   // Read more link
-  scList.push(
-    createUlElement({
-      content: {
+  scList.push({
+    tag: 'div',
+    content: [
+      createImageNode({
+        filePath: 'pixiv-logo.png',
+        alt: 'pixiv',
+      }),
+      ' ',
+      {
         tag: 'a',
         href: `https://dic.pixiv.net/a/${article.tag_name}`,
-        content: 'pixivで続きを読む',
+        content: 'pixivで読む',
       },
-      data: {
-        pixiv: 'read-more-link',
-      },
-      listPrefix: '⧉',
-    }),
-  );
+    ],
+    data: {
+      pixiv: 'read-more-link',
+    },
+  });
   // Stats
   scList.push({
     tag: 'div',
@@ -91,5 +96,28 @@ export function createDetailedDefinition(
   return {
     type: 'structured-content',
     content: scList,
+  };
+}
+
+import path from 'path';
+const assetsFolder = 'assets';
+
+function createImageNode({
+  filePath,
+  alt,
+}: {
+  filePath: string;
+  alt: string;
+}): StructuredContentNode {
+  return {
+    tag: 'img',
+    path: path.join(assetsFolder, filePath),
+    alt: alt,
+    collapsed: false,
+    collapsible: false,
+    height: 1,
+    width: 1,
+    sizeUnits: 'em',
+    verticalAlign: 'middle',
   };
 }
