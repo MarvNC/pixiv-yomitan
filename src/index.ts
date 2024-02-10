@@ -53,8 +53,10 @@ async function main() {
   });
   console.log(`Building dictionary...`);
   progressBar.start(allArticles.length, 0);
+  let invalidCount = 0;
   for (const article of allArticles) {
     if (!isValidArticle(article)) {
+      invalidCount++;
       progressBar.increment();
       continue;
     }
@@ -62,8 +64,9 @@ async function main() {
     await dictionary.addTerm(entry.build());
     progressBar.increment();
   }
-
   progressBar.stop();
+
+  console.log(`Skipped ${invalidCount} invalid articles.`);
 
   console.log(`Exporting dictionary...`);
   const stats = await dictionary.export('dist');
