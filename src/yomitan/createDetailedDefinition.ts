@@ -5,9 +5,6 @@ import {
 } from 'yomichan-dict-builder/dist/types/yomitan/termbank';
 import { createUlElement } from './createUlElement';
 
-const viewsLabel = '閲覧数';
-const illustrationCountLabel = '作品数';
-const readMoreEmoji = '⧉';
 export function createDetailedDefinition(
   article: PixivArticle,
 ): DetailedDefinition {
@@ -54,7 +51,7 @@ export function createDetailedDefinition(
       data: {
         pixiv: 'read-more-link',
       },
-      listPrefix: readMoreEmoji,
+      listPrefix: '⧉',
     }),
   );
   // Stats
@@ -67,11 +64,27 @@ export function createDetailedDefinition(
       pixiv: 'stats',
     },
     content: [
-      `${viewsLabel}: ${article.view_count} | `,
+      {
+        tag: 'span',
+        style: {
+          cursor: 'pointer',
+        },
+        content: `👁 ${article.view_count}`,
+        title: '閲覧数',
+      },
+      ' | ',
+      {
+        tag: 'span',
+        style: {
+          cursor: 'pointer',
+        },
+        content: `🖼️ `,
+        title: 'pixivイラスト数',
+      },
       {
         tag: 'a',
         href: `https://www.pixiv.net/tags.php?tag=${article.tag_name}`,
-        content: `${illustrationCountLabel}: ${article.illust_count}`,
+        content: `${article.illust_count}作品`,
       },
     ],
   });
