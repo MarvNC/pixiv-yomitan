@@ -3,6 +3,7 @@ import { Dictionary } from 'yomichan-dict-builder';
 import { SingleBar } from 'cli-progress';
 import { articleToTermEntry } from './helpers/articleToTermEntry';
 import { getPackageVersion } from './helpers/getPackageVersion';
+import { isValidArticle } from './helpers/isValidArticle';
 
 const prisma = new PrismaClient();
 
@@ -53,6 +54,10 @@ async function main() {
   console.log(`Building dictionary...`);
   progressBar.start(allArticles.length, 0);
   for (const article of allArticles) {
+    if (!isValidArticle(article)) {
+      progressBar.increment();
+      continue;
+    }
     const entry = articleToTermEntry(article);
     await dictionary.addTerm(entry.build());
     progressBar.increment();
@@ -62,12 +67,6 @@ async function main() {
 
   console.log(`Exporting dictionary...`);
   const stats = await dictionary.export('dist');
-
-  if (stats.termCount !== allArticles.length) {
-    throw new Error(
-      `Mismatched term count: ${stats.termCount} vs ${allArticles.length}`,
-    );
-  }
   console.log(`Exported ${stats.termCount} terms`);
 }
 
