@@ -1,6 +1,6 @@
 import { Dictionary } from 'yomichan-dict-builder';
 import { SingleBar } from 'cli-progress';
-import { articleToTermEntry } from './helpers/articleToTermEntry';
+import { articleToTermEntry } from './yomitan/articleToTermEntry';
 import { getPackageVersion } from './helpers/getPackageVersion';
 import { isValidArticle } from './helpers/isValidArticle';
 import { getDatabaseData } from './helpers/getDatabaseData';
