@@ -2,17 +2,27 @@
   "name": "pixiv-yomitan",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node .",
+    "prestart": "npm run build",
+    "format": "prettier --write .",
+    "prepare": "npx prisma generate"
   },
   "author": "MarvNC",
   "license": "MIT",
-  "type": "module",
   "dependencies": {
-    "japanese-furigana-normalize": "^1.0.2"
+    "@prisma/client": "^5.9.1",
+    "cli-progress": "^3.12.0",
+    "japanese-furigana-normalize": "^1.0.2",
+    "prisma": "^5.9.1",
+    "yomichan-dict-builder": "^2.5.0"
   },
   "devDependencies": {
+    "@types/cli-progress": "^3.11.5",
+    "@types/node": "^20.11.17",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.56.0",
