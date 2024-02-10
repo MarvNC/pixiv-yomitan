@@ -59,7 +59,14 @@ async function main() {
   progressBar.stop();
 
   console.log(`Exporting dictionary...`);
-  await dictionary.export('dist');
+  const stats = await dictionary.export('dist');
+
+  if (stats.termCount !== allArticles.length) {
+    throw new Error(
+      `Mismatched term count: ${stats.termCount} vs ${allArticles.length}`,
+    );
+  }
+  console.log(`Exported ${stats.termCount} terms`);
 }
 
 main()
