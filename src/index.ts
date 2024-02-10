@@ -4,29 +4,12 @@ import { SingleBar } from 'cli-progress';
 import { articleToTermEntry } from './helpers/articleToTermEntry';
 import { getPackageVersion } from './helpers/getPackageVersion';
 import { isValidArticle } from './helpers/isValidArticle';
+import { getDatabaseData } from './helpers/getDatabaseData';
 
-const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 
 async function main() {
-  const allArticles = await prisma.pixivArticle.findMany();
-  console.log(`Found ${allArticles.length} articles`);
-
-  // Format 0000-00-00 00:00:00
-  const latestDate = (
-    await prisma.scrapeProgress.findFirst({
-      orderBy: {
-        newestDate: 'desc',
-      },
-    })
-  )?.newestDate;
-  if (!latestDate) {
-    throw new Error(`No latest date found`);
-  }
-  const latestDateShort = latestDate?.split(' ')[0];
-
-  console.log(`Latest date: ${latestDateShort}`);
-
-  await prisma.$disconnect();
+  const { latestDateShort, allArticles } = await getDatabaseData();
 
   const dictionary = new Dictionary({
     fileName: `Pixiv_${latestDateShort}.zip`,
