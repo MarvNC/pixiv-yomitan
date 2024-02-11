@@ -28,7 +28,6 @@ import { addAllAssetsToDictionary } from './yomitan/addAllAssetsToDictionary';
     author: `Pixiv contributors, Marv`,
     attribution: `https://dic.pixiv.net`,
     url: `https://github.com/MarvNC/pixiv-yomitan`,
-    // TODO
     title: `Pixiv [${latestDateShort}]`,
     revision: getPackageVersion(),
     description: `Article summaries from the Pixiv encyclopedia (ピクシブ百科事典), ${allArticles.length} articles included.
