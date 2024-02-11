@@ -1,0 +1,71 @@
+name: Download and Build Pixiv
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-dict:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get latest Pixiv dump URL
+        id: get_url
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const repo = "MarvNC/pixiv-dump"
+            const releases = await github.rest.repos.listReleases({
+              owner: repo.split('/')[0],
+              repo: repo.split('/')[1]
+            })
+            const latestRelease = releases.data[0]
+            const asset = latestRelease.assets.find(asset => asset.name === 'pixiv.db')
+            if (!asset) {
+              throw new Error('Asset not found')
+            }
+            return asset.browser_download_url
+
+      - name: Download latest dump
+        run: wget -P db "${{ steps.get_url.outputs.result }}"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Dictionary
+        run: npm run start
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+
+  publish-release:
+    needs: build-dict
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist
+
+      - name: Get Current Date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
+      - name: Create and Publish Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*
+          tag_name: ${{ steps.date.outputs.date }}
+          name: ${{ steps.date.outputs.date }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            This is an automated release of the latest Pixiv for Yomitan.
+            Please check the [README](https://github.com/MarvNC/pixiv-yomitan) for more information.
