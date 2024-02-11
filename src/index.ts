@@ -10,7 +10,10 @@ import { addAllAssetsToDictionary } from './yomitan/addAllAssetsToDictionary';
 (async () => {
   const devMode = isDevMode();
 
-  const { latestDateShort, allArticles } = await getDatabaseData();
+  const { allArticles } = await getDatabaseData();
+
+  // YYYY-MM-DD
+  const latestDateShort = new Date().toISOString().split('T')[0];
 
   // If dev mode, limit to 5 articles
   if (devMode) {

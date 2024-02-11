@@ -9,10 +9,10 @@ export async function getDatabaseData() {
   const latestDate = (
     await prisma.scrapeProgress.findFirst({
       orderBy: {
-        newestDate: 'desc',
+        newestScraped: 'desc',
       },
     })
-  )?.newestDate;
+  )?.newestScraped;
   if (!latestDate) {
     throw new Error(`No latest date found`);
   }
