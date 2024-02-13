@@ -1,4 +1,5 @@
 import { PixivArticle } from '@prisma/client';
+import path from 'path';
 import {
   DetailedDefinition,
   StructuredContentNode,
@@ -32,7 +33,6 @@ export function createDetailedDefinition(
   };
 }
 
-import path from 'path';
 const assetsFolder = 'assets';
 
 function addRelatedArticles(
