@@ -142,9 +142,9 @@ function addMainText(article: PixivArticle, scList: StructuredContentNode[]) {
         },
       },
       createUlElement({
-        content: article.mainText.split('\n').filter((p) => p.trim() !== ''),
+        content: article.mainText,
         data: { pixiv: 'main-text' },
-        splitList: true,
+        splitList: false,
         listStyleType: 'none',
       }),
     );
