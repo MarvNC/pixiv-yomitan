@@ -47,6 +47,9 @@ export function createDetailedDefinition(
         tag: 'div',
         content: '概要',
         data: { pixiv: 'main-text-title' },
+        style: {
+          fontWeight: 'bold',
+        },
       },
       createUlElement({
         content: article.mainText,
