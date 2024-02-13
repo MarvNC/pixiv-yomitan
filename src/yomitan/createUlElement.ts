@@ -1,17 +1,18 @@
 import {
   StructuredContentData,
   StructuredContentNode,
+  StructuredContentStyle,
 } from 'yomichan-dict-builder/dist/types/yomitan/termbank';
 
 export function createUlElement({
   content,
   contentArray,
-  listStyleType,
+  style,
   data,
 }: {
   content?: StructuredContentNode;
   contentArray?: StructuredContentNode[];
-  listStyleType?: string;
+  style?: StructuredContentStyle;
   data?: StructuredContentData;
 }): StructuredContentNode {
   if (!content && !contentArray) {
@@ -24,10 +25,8 @@ export function createUlElement({
       content: c,
     })),
   };
-  if (listStyleType) {
-    element.style = {
-      listStyleType,
-    };
+  if (style) {
+    element.style = style;
   }
   if (data) {
     element.data = data;

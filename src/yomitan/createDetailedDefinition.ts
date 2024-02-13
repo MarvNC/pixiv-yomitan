@@ -26,10 +26,8 @@ export function createDetailedDefinition(
     // Add related articles
     addRelatedArticles(article, scList);
   }
-  // Read more link
-  addReadMore(scList, article);
   // Stats
-  addStats(scList, article);
+  addFooter(scList, article);
   return {
     type: 'structured-content',
     content: scList,
@@ -75,22 +73,44 @@ function addRelatedArticles(
           content: relatedArticlesArray,
         },
         data: { pixiv: 'related-tags' },
-        listStyleType: 'none',
+        style: {
+          listStyleType: 'none',
+        },
       }),
     );
   }
 }
 
-function addStats(scList: StructuredContentNode[], article: PixivArticle) {
+function addFooter(scList: StructuredContentNode[], article: PixivArticle) {
   scList.push({
     tag: 'div',
     style: {
       textAlign: 'right',
+      marginTop: '0.4em',
     },
     data: {
       pixiv: 'stats',
     },
     content: [
+      {
+        tag: 'span',
+        content: [
+          createImageNode({
+            filePath: 'pixiv-logo.png',
+            alt: 'pixiv',
+          }),
+          ' ',
+          {
+            tag: 'a',
+            href: `https://dic.pixiv.net/a/${article.tag_name}`,
+            content: 'pixivで読む',
+          },
+        ],
+        data: {
+          pixiv: 'read-more-link',
+        },
+      },
+      ' | ',
       {
         tag: 'span',
         style: {
@@ -117,27 +137,6 @@ function addStats(scList: StructuredContentNode[], article: PixivArticle) {
   });
 }
 
-function addReadMore(scList: StructuredContentNode[], article: PixivArticle) {
-  scList.push({
-    tag: 'div',
-    content: [
-      createImageNode({
-        filePath: 'pixiv-logo.png',
-        alt: 'pixiv',
-      }),
-      ' ',
-      {
-        tag: 'a',
-        href: `https://dic.pixiv.net/a/${article.tag_name}`,
-        content: 'pixivで読む',
-      },
-    ],
-    data: {
-      pixiv: 'read-more-link',
-    },
-  });
-}
-
 function addMainText(article: PixivArticle, scList: StructuredContentNode[]) {
   if (article.mainText) {
     scList.push(
@@ -152,7 +151,9 @@ function addMainText(article: PixivArticle, scList: StructuredContentNode[]) {
       createUlElement({
         content: article.mainText,
         data: { pixiv: 'main-text' },
-        listStyleType: 'none',
+        style: {
+          listStyleType: 'none',
+        },
       }),
     );
   }
