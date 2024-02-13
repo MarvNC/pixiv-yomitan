@@ -5,29 +5,24 @@ import {
 
 export function createUlElement({
   content,
+  contentArray,
   listStyleType,
   data,
-  splitList,
 }: {
-  content: StructuredContentNode;
+  content?: StructuredContentNode;
+  contentArray?: StructuredContentNode[];
   listStyleType?: string;
   data?: StructuredContentData;
-  splitList: boolean;
 }): StructuredContentNode {
-  if (splitList && !Array.isArray(content)) {
-    throw new Error('splitList requires content to be an array');
+  if (!content && !contentArray) {
+    throw new Error('content or contentArray must be provided');
   }
   const element: StructuredContentNode = {
     tag: 'ul',
-    content: splitList
-      ? (content as StructuredContentNode[]).map((c) => ({
-          tag: 'li',
-          content: c,
-        }))
-      : {
-          tag: 'li',
-          content,
-        },
+    content: [...(contentArray ?? []), content].map((c) => ({
+      tag: 'li',
+      content: c,
+    })),
   };
   if (listStyleType) {
     element.style = {

@@ -16,7 +16,6 @@ export function createDetailedDefinition(
     createUlElement({
       content: article.summary,
       data: { pixiv: 'summary' },
-      splitList: false,
     }),
   );
   // Main text
@@ -56,7 +55,6 @@ export function createDetailedDefinition(
         },
         data: { pixiv: 'related-tags' },
         listStyleType: 'none',
-        splitList: false,
       }),
     );
   }
@@ -144,7 +142,6 @@ function addMainText(article: PixivArticle, scList: StructuredContentNode[]) {
       createUlElement({
         content: article.mainText,
         data: { pixiv: 'main-text' },
-        splitList: false,
         listStyleType: 'none',
       }),
     );
