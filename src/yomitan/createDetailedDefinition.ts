@@ -7,6 +7,7 @@ import { createUlElement } from './createUlElement';
 
 export function createDetailedDefinition(
   article: PixivArticle,
+  pixivLight: boolean,
 ): DetailedDefinition {
   const scList: StructuredContentNode = [];
   // Parent tag
@@ -18,10 +19,12 @@ export function createDetailedDefinition(
       data: { pixiv: 'summary' },
     }),
   );
-  // Main text
-  addMainText(article, scList);
-  // Add related articles
-  addRelatedArticles(article, scList);
+  if (!pixivLight) {
+    // Main text
+    addMainText(article, scList);
+    // Add related articles
+    addRelatedArticles(article, scList);
+  }
   // Read more link
   addReadMore(scList, article);
   // Stats

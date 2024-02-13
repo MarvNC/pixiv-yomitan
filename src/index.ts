@@ -6,8 +6,23 @@ import { getPackageVersion } from './helpers/getPackageVersion';
 import { isValidArticle } from './helpers/isValidArticle';
 import { getDatabaseData } from './helpers/getDatabaseData';
 import { addAllAssetsToDictionary } from './yomitan/addAllAssetsToDictionary';
+import yargs from 'yargs';
 
 (async () => {
+  const argv = await yargs(process.argv.slice(2))
+    .options({
+      light: {
+        type: 'boolean',
+        description: 'Output lightweight dictionary',
+        default: false,
+      },
+    })
+    .parse();
+  const pixivLight = !!argv.light;
+  console.log(
+    `Building dictionary with ${pixivLight ? 'light' : 'full'} mode.`,
+  );
+
   const devMode = isDevMode();
 
   const { allArticles } = await getDatabaseData();
@@ -22,7 +37,7 @@ import { addAllAssetsToDictionary } from './yomitan/addAllAssetsToDictionary';
   }
 
   const dictionary = new Dictionary({
-    fileName: `Pixiv_${latestDateShort}.zip`,
+    fileName: `Pixiv${pixivLight ? 'Light' : ''}_${latestDateShort}.zip`,
   });
 
   await addAllAssetsToDictionary(dictionary);
@@ -31,9 +46,9 @@ import { addAllAssetsToDictionary } from './yomitan/addAllAssetsToDictionary';
     author: `Pixiv contributors, Marv`,
     attribution: `https://dic.pixiv.net`,
     url: `https://github.com/MarvNC/pixiv-yomitan`,
-    title: `Pixiv [${latestDateShort}]`,
+    title: `Pixiv${pixivLight ? ' Light' : ''} [${latestDateShort}]`,
     revision: getPackageVersion(),
-    description: `Article summaries from the Pixiv encyclopedia (ピクシブ百科事典), ${allArticles.length} articles included.
+    description: `Article summaries from the Pixiv encyclopedia (ピクシブ百科事典), ${allArticles.length} articles included.${pixivLight ? ' Light mode.' : ''}
     Pixiv dumps used to build this found at https://github.com/MarvNC/pixiv-dump.
     Built with https://github.com/MarvNC/yomichan-dict-builder.`,
   });
@@ -54,7 +69,7 @@ import { addAllAssetsToDictionary } from './yomitan/addAllAssetsToDictionary';
       progressBar.increment();
       continue;
     }
-    const entry = articleToTermEntry(article);
+    const entry = articleToTermEntry(article, pixivLight);
     await dictionary.addTerm(entry.build());
     progressBar.increment();
   }
