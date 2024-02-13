@@ -6,6 +6,10 @@ export function addFooter(
   scList: StructuredContentNode[],
   article: PixivArticle,
 ) {
+  const epoch = parseInt(article.lastScraped);
+  const date = new Date(epoch);
+  const dateString = date.toISOString().slice(0, 10);
+
   scList.push({
     tag: 'div',
     style: {
@@ -41,7 +45,7 @@ export function addFooter(
           cursor: 'pointer',
         },
         content: `👁 ${article.view_count}`,
-        title: '閲覧数',
+        title: `${dateString ? dateString + 'の' : ''}閲覧数`,
       },
       ' | ',
       {
@@ -50,7 +54,6 @@ export function addFooter(
           cursor: 'pointer',
         },
         content: `🖼️ `,
-        title: 'pixivイラスト数',
       },
       {
         tag: 'a',
