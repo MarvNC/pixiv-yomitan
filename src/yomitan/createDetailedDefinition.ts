@@ -17,12 +17,14 @@ export function createDetailedDefinition(
   // Parent tag
   addParentTag(article, scList);
   // Summary
-  scList.push(
-    createUlElement({
-      content: article.summary,
-      data: { pixiv: 'summary' },
-    }),
-  );
+  if (article.summary) {
+    scList.push(
+      createUlElement({
+        content: article.summary,
+        data: { pixiv: 'summary' },
+      }),
+    );
+  }
   if (!pixivLight) {
     // Main text
     addMainText(article, scList);
