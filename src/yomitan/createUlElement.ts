@@ -14,10 +14,10 @@ export function createUlElement({
 }): StructuredContentNode {
   const element: StructuredContentNode = {
     tag: 'ul',
-    content: {
+    content: (Array.isArray(content) ? content : [content]).map((c) => ({
       tag: 'li',
-      content,
-    },
+      content: c,
+    })),
   };
   if (listPrefix) {
     element.style = {
