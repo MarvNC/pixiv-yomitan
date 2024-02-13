@@ -13,10 +13,53 @@ export function createDetailedDefinition(
   addParentTag(article, scList);
   // Summary
   scList.push(
-    createUlElement({ content: article.summary, data: { pixiv: 'summary' } }),
+    createUlElement({
+      content: article.summary,
+      data: { pixiv: 'summary' },
+      splitList: false,
+    }),
   );
   // Main text
   addMainText(article, scList);
+  // Add related articles
+  const related: string[] = JSON.parse(article.related_tags);
+  if (!Array.isArray(related)) {
+    throw new Error('related_tags should be an array');
+  }
+  if (related.length > 0) {
+    scList.push({
+      tag: 'div',
+      content: '関連記事',
+      data: { pixiv: 'related-tags-title' },
+      style: {
+        fontWeight: 'bold',
+      },
+    });
+    const relatedArticlesArray: StructuredContentNode[] = [];
+    for (const tag of related) {
+      relatedArticlesArray.push(
+        {
+          tag: 'a',
+          href: `?query=${tag}`,
+          content: tag,
+        },
+        '・',
+      );
+    }
+    // Remove last '・'
+    relatedArticlesArray.pop();
+    scList.push(
+      createUlElement({
+        content: {
+          tag: 'div',
+          content: relatedArticlesArray,
+        },
+        data: { pixiv: 'related-tags' },
+        listStyleType: 'none',
+        splitList: false,
+      }),
+    );
+  }
   // Read more link
   addReadMore(scList, article);
   // Stats
@@ -101,6 +144,8 @@ function addMainText(article: PixivArticle, scList: StructuredContentNode[]) {
       createUlElement({
         content: article.mainText,
         data: { pixiv: 'main-text' },
+        splitList: false,
+        listStyleType: 'none',
       }),
     );
   }
