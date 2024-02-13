@@ -40,6 +40,20 @@ export function createDetailedDefinition(
   scList.push(
     createUlElement({ content: article.summary, data: { pixiv: 'summary' } }),
   );
+  // Main text
+  if (article.mainText) {
+    scList.push(
+      {
+        tag: 'div',
+        content: '概要',
+        data: { pixiv: 'main-text-title' },
+      },
+      createUlElement({
+        content: article.mainText,
+        data: { pixiv: 'main-text' },
+      }),
+    );
+  }
   // Read more link
   scList.push({
     tag: 'div',
