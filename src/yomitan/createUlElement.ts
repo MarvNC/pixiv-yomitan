@@ -5,23 +5,33 @@ import {
 
 export function createUlElement({
   content,
-  listPrefix,
+  listStyleType,
   data,
+  splitList,
 }: {
   content: StructuredContentNode;
-  listPrefix?: string;
+  listStyleType?: string;
   data?: StructuredContentData;
+  splitList: boolean;
 }): StructuredContentNode {
+  if (splitList && !Array.isArray(content)) {
+    throw new Error('splitList requires content to be an array');
+  }
   const element: StructuredContentNode = {
     tag: 'ul',
-    content: (Array.isArray(content) ? content : [content]).map((c) => ({
-      tag: 'li',
-      content: c,
-    })),
+    content: splitList
+      ? (content as StructuredContentNode[]).map((c) => ({
+          tag: 'li',
+          content: c,
+        }))
+      : {
+          tag: 'li',
+          content,
+        },
   };
-  if (listPrefix) {
+  if (listStyleType) {
     element.style = {
-      listStyleType: `"${listPrefix}"`,
+      listStyleType,
     };
   }
   if (data) {
