@@ -21,6 +21,24 @@ export function createDetailedDefinition(
   // Main text
   addMainText(article, scList);
   // Add related articles
+  addRelatedArticles(article, scList);
+  // Read more link
+  addReadMore(scList, article);
+  // Stats
+  addStats(scList, article);
+  return {
+    type: 'structured-content',
+    content: scList,
+  };
+}
+
+import path from 'path';
+const assetsFolder = 'assets';
+
+function addRelatedArticles(
+  article: PixivArticle,
+  scList: StructuredContentNode[],
+) {
   const related: string[] = JSON.parse(article.related_tags);
   if (!Array.isArray(related)) {
     throw new Error('related_tags should be an array');
@@ -58,18 +76,7 @@ export function createDetailedDefinition(
       }),
     );
   }
-  // Read more link
-  addReadMore(scList, article);
-  // Stats
-  addStats(scList, article);
-  return {
-    type: 'structured-content',
-    content: scList,
-  };
 }
-
-import path from 'path';
-const assetsFolder = 'assets';
 
 function addStats(scList: StructuredContentNode[], article: PixivArticle) {
   scList.push({
