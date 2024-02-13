@@ -10,73 +10,27 @@ export function createDetailedDefinition(
 ): DetailedDefinition {
   const scList: StructuredContentNode = [];
   // Parent tag
-  if (article.parent) {
-    scList.push({
-      tag: 'div',
-      data: {
-        pixiv: 'parent-tag',
-      },
-      style: {
-        color: '#e5007f',
-      },
-      content: [
-        {
-          tag: 'span',
-          content: '«',
-        },
-        {
-          tag: 'a',
-          content: article.parent,
-          href: `?query=${article.parent}`,
-        },
-        {
-          tag: 'span',
-          content: '»',
-        },
-      ],
-    });
-  }
+  addParentTag(article, scList);
   // Summary
   scList.push(
     createUlElement({ content: article.summary, data: { pixiv: 'summary' } }),
   );
   // Main text
-  if (article.mainText) {
-    scList.push(
-      {
-        tag: 'div',
-        content: '概要',
-        data: { pixiv: 'main-text-title' },
-        style: {
-          fontWeight: 'bold',
-        },
-      },
-      createUlElement({
-        content: article.mainText,
-        data: { pixiv: 'main-text' },
-      }),
-    );
-  }
+  addMainText(article, scList);
   // Read more link
-  scList.push({
-    tag: 'div',
-    content: [
-      createImageNode({
-        filePath: 'pixiv-logo.png',
-        alt: 'pixiv',
-      }),
-      ' ',
-      {
-        tag: 'a',
-        href: `https://dic.pixiv.net/a/${article.tag_name}`,
-        content: 'pixivで読む',
-      },
-    ],
-    data: {
-      pixiv: 'read-more-link',
-    },
-  });
+  addReadMore(scList, article);
   // Stats
+  addStats(scList, article);
+  return {
+    type: 'structured-content',
+    content: scList,
+  };
+}
+
+import path from 'path';
+const assetsFolder = 'assets';
+
+function addStats(scList: StructuredContentNode[], article: PixivArticle) {
   scList.push({
     tag: 'div',
     style: {
@@ -110,14 +64,76 @@ export function createDetailedDefinition(
       },
     ],
   });
-  return {
-    type: 'structured-content',
-    content: scList,
-  };
 }
 
-import path from 'path';
-const assetsFolder = 'assets';
+function addReadMore(scList: StructuredContentNode[], article: PixivArticle) {
+  scList.push({
+    tag: 'div',
+    content: [
+      createImageNode({
+        filePath: 'pixiv-logo.png',
+        alt: 'pixiv',
+      }),
+      ' ',
+      {
+        tag: 'a',
+        href: `https://dic.pixiv.net/a/${article.tag_name}`,
+        content: 'pixivで読む',
+      },
+    ],
+    data: {
+      pixiv: 'read-more-link',
+    },
+  });
+}
+
+function addMainText(article: PixivArticle, scList: StructuredContentNode[]) {
+  if (article.mainText) {
+    scList.push(
+      {
+        tag: 'div',
+        content: '概要',
+        data: { pixiv: 'main-text-title' },
+        style: {
+          fontWeight: 'bold',
+        },
+      },
+      createUlElement({
+        content: article.mainText,
+        data: { pixiv: 'main-text' },
+      }),
+    );
+  }
+}
+
+function addParentTag(article: PixivArticle, scList: StructuredContentNode[]) {
+  if (article.parent) {
+    scList.push({
+      tag: 'div',
+      data: {
+        pixiv: 'parent-tag',
+      },
+      style: {
+        color: '#e5007f',
+      },
+      content: [
+        {
+          tag: 'span',
+          content: '«',
+        },
+        {
+          tag: 'a',
+          content: article.parent,
+          href: `?query=${article.parent}`,
+        },
+        {
+          tag: 'span',
+          content: '»',
+        },
+      ],
+    });
+  }
+}
 
 function createImageNode({
   filePath,
