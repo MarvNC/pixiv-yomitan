@@ -12,6 +12,8 @@ import { addParentTag } from './detailedDefinition/addParentTag';
 export function createDetailedDefinition(
   article: PixivArticle,
   pixivLight: boolean,
+  cleanHeadword: string,
+  bracketContent: string,
 ): DetailedDefinition {
   const scList: StructuredContentNode = [];
   // Parent tag
