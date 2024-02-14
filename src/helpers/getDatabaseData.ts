@@ -1,8 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-export async function getDatabaseData() {
-  const allArticles = await prisma.pixivArticle.findMany();
+export async function getDatabaseData({ limit }: { limit?: number }) {
+  const allArticles = limit
+    ? await prisma.pixivArticle.findMany({ take: limit })
+    : await prisma.pixivArticle.findMany();
   console.log(`Found ${allArticles.length} articles`);
 
   // Format 0000-00-00 00:00:00

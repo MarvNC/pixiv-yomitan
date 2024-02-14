@@ -24,17 +24,17 @@ import yargs from 'yargs';
   );
 
   const devMode = isDevMode();
-
-  const { allArticles } = await getDatabaseData();
-
-  // YYYY-MM-DD
-  const latestDateShort = new Date().toISOString().split('T')[0];
-
   // If dev mode, limit to 5 articles
   if (devMode) {
     console.log(`Running in dev mode, limiting to 5 articles.`);
-    allArticles.splice(5);
   }
+
+  const { allArticles } = await getDatabaseData({
+    limit: devMode ? 5 : undefined,
+  });
+
+  // YYYY-MM-DD
+  const latestDateShort = new Date().toISOString().split('T')[0];
 
   const dictionary = new Dictionary({
     fileName: `Pixiv${pixivLight ? 'Light' : ''}_${latestDateShort}.zip`,
