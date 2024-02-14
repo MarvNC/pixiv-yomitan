@@ -7,17 +7,16 @@ import { createUlElement } from './createUlElement';
 import { addRelatedArticles } from './detailedDefinition/addRelatedArticles';
 import { addFooter } from './detailedDefinition/addFooter';
 import { addMainText } from './detailedDefinition/addMainText';
-import { addParentTag } from './detailedDefinition/addParentTag';
+import { addParentInfo } from './detailedDefinition/addParentInfo';
 
 export function createDetailedDefinition(
   article: PixivArticle,
   pixivLight: boolean,
-  cleanHeadword: string,
   bracketContent: string,
 ): DetailedDefinition {
   const scList: StructuredContentNode = [];
-  // Parent tag
-  addParentTag(article, scList);
+  // Parent tag/bracket stuff
+  addParentInfo(article, scList, bracketContent);
   // Summary
   if (article.summary) {
     scList.push(

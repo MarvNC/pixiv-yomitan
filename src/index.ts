@@ -80,4 +80,8 @@ import yargs from 'yargs';
   console.log(`Exporting dictionary...`);
   const stats = await dictionary.export('dist');
   console.log(`Exported ${stats.termCount} terms`);
+  const additionalTerms = stats.termCount - allArticles.length;
+  if (additionalTerms > 0) {
+    console.log(`(${additionalTerms} additional terms from brackets)`);
+  }
 })();

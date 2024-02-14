@@ -10,36 +10,36 @@ export async function addArticleToDictionary(
 ) {
   const entry = new TermEntry(article.tag_name);
   entry.setReading(getArticleProcessedReading(article));
+  // const cleanHeadword = article.tag_name.trim();
   // Check for parentheses
-  const { cleanHeadword, bracketContent } = getCleanHeadword(article.tag_name);
-  entry.addDetailedDefinition(
-    createDetailedDefinition(
-      article,
-      pixivLight,
-      cleanHeadword,
-      bracketContent,
-    ),
+  const { noBracketsHeadword, bracketContent } = parseHeadwordBrackets(
+    article.tag_name,
   );
-  if (bracketContent) {
-    // TODO
-  }
+  entry.addDetailedDefinition(
+    createDetailedDefinition(article, pixivLight, bracketContent),
+  );
   await dictionary.addTerm(entry.build());
+  // Add the clean headword without brackets if it exists
+  if (bracketContent) {
+    entry.setTerm(noBracketsHeadword);
+    await dictionary.addTerm(entry.build());
+  }
 }
 
-function getCleanHeadword(headword: string): {
-  cleanHeadword: string;
+function parseHeadwordBrackets(headword: string): {
+  noBracketsHeadword: string;
   bracketContent: string;
 } {
   const results = headword.match(/^(.+)[(（]([^(（)）]+)[)）]$/);
   if (results) {
     const [, cleanHeadword, brackets] = results;
     return {
-      cleanHeadword,
+      noBracketsHeadword: cleanHeadword,
       bracketContent: brackets,
     };
   }
   return {
-    cleanHeadword: '',
+    noBracketsHeadword: '',
     bracketContent: '',
   };
 }
