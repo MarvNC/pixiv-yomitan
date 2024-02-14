@@ -15,35 +15,43 @@ export function addRelatedArticles(
   }
   scList.push({
     tag: 'div',
-    content: '関連記事',
-    data: { pixiv: 'related-tags-title' },
+    data: { pixiv: 'related-tags' },
     style: {
-      fontWeight: 'bold',
+      marginBottom: '0.4em',
     },
-  });
-  const relatedArticlesArray: StructuredContentNode[] = [];
-  for (const tag of related) {
-    relatedArticlesArray.push(
+    content: [
       {
-        tag: 'a',
-        href: `?query=${tag}`,
-        content: tag,
-      },
-      '・',
-    );
-  }
-  // Remove last '・'
-  relatedArticlesArray.pop();
-  scList.push(
-    createUlElement({
-      content: {
         tag: 'div',
-        content: relatedArticlesArray,
+        content: '関連記事',
+        style: {
+          fontWeight: 'bold',
+        },
       },
-      data: { pixiv: 'related-tags' },
-      style: {
-        listStyleType: 'none',
+      {
+        tag: 'ul',
+        content: {
+          tag: 'div',
+          // Map related to arr of links separated by '・'
+          content: related
+            .reduce((acc, tag) => {
+              acc.push(
+                {
+                  tag: 'a',
+                  href: `?query=${tag}`,
+                  content: tag,
+                },
+                '・',
+              );
+              return acc;
+            }, [] as StructuredContentNode[])
+            // Remove last '・'
+            .slice(0, -1),
+        },
+        data: { pixiv: 'related-tags' },
+        style: {
+          listStyleType: 'none',
+        },
       },
-    }),
-  );
+    ],
+  });
 }
