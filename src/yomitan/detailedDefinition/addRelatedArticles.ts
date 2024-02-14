@@ -1,6 +1,5 @@
 import { PixivArticle } from '@prisma/client';
 import { StructuredContentNode } from 'yomichan-dict-builder/dist/types/yomitan/termbank';
-import { createUlElement } from '../createUlElement';
 
 export function addRelatedArticles(
   article: PixivArticle,
