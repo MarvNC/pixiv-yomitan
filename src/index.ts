@@ -38,6 +38,7 @@ import yargs from 'yargs';
 
   const dictionary = new Dictionary({
     fileName: `Pixiv${pixivLight ? 'Light' : ''}_${latestDateShort}.zip`,
+    termBankMaxSize: 1000,
   });
 
   await addAllAssetsToDictionary(dictionary);
