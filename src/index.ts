@@ -1,6 +1,6 @@
 import { Dictionary } from 'yomichan-dict-builder';
 import { SingleBar } from 'cli-progress';
-import { articleToTermEntry } from './yomitan/articleToTermEntry';
+import { addArticleToDictionary } from './yomitan/addArticleToDictionary';
 import { isDevMode } from './helpers/isDevMode';
 import { getPackageVersion } from './helpers/getPackageVersion';
 import { isValidArticle } from './helpers/isValidArticle';
@@ -70,8 +70,7 @@ import yargs from 'yargs';
       progressBar.increment();
       continue;
     }
-    const entry = articleToTermEntry(article, pixivLight);
-    await dictionary.addTerm(entry.build());
+    await addArticleToDictionary(article, pixivLight, dictionary);
     progressBar.increment();
   }
   progressBar.stop();

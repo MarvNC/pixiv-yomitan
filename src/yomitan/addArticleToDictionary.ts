@@ -1,14 +1,15 @@
 import { PixivArticle } from '@prisma/client';
-import { TermEntry } from 'yomichan-dict-builder';
+import { Dictionary, TermEntry } from 'yomichan-dict-builder';
 import { getArticleProcessedReading } from '../helpers/getArticleProcessedReading';
 import { createDetailedDefinition } from './createDetailedDefinition';
 
-export function articleToTermEntry(
+export async function addArticleToDictionary(
   article: PixivArticle,
   pixivLight: boolean,
-): TermEntry {
+  dictionary: Dictionary,
+) {
   const entry = new TermEntry(article.tag_name);
   entry.setReading(getArticleProcessedReading(article));
   entry.addDetailedDefinition(createDetailedDefinition(article, pixivLight));
-  return entry;
+  await dictionary.addTerm(entry.build());
 }
