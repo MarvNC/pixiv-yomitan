@@ -1,7 +1,10 @@
 import { PixivArticle } from '@prisma/client';
 import { StructuredContentNode } from 'yomichan-dict-builder/dist/types/yomitan/termbank';
 
-export function addParentTag(article: PixivArticle, scList: StructuredContentNode[]) {
+export function addParentTag(
+  article: PixivArticle,
+  scList: StructuredContentNode[],
+) {
   if (article.parent) {
     scList.push({
       tag: 'div',
@@ -9,21 +12,14 @@ export function addParentTag(article: PixivArticle, scList: StructuredContentNod
         pixiv: 'parent-tag',
       },
       style: {
-        color: '#e5007f',
+        fontWeight: 'bold',
+        textDecorationStyle: 'dashed',
       },
       content: [
         {
-          tag: 'span',
-          content: '«',
-        },
-        {
           tag: 'a',
-          content: article.parent,
+          content: `←${article.parent}`,
           href: `?query=${article.parent}`,
-        },
-        {
-          tag: 'span',
-          content: '»',
         },
       ],
     });
