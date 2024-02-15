@@ -4,7 +4,8 @@ import { StructuredContentNode } from 'yomichan-dict-builder/dist/types/yomitan/
 const assetsFolder = 'assets';
 
 export function createImageNode({
-  filePath, alt,
+  filePath,
+  alt,
 }: {
   filePath: string;
   alt: string;
