@@ -4,9 +4,12 @@ import { addArticleToDictionary } from './yomitan/addArticleToDictionary';
 import { isDevMode } from './helpers/isDevMode';
 import { getPackageVersion } from './helpers/getPackageVersion';
 import { isValidArticle } from './helpers/isValidArticle';
-import { getDatabaseData } from './helpers/getDatabaseData';
+// import { getDatabaseData } from './helpers/getDatabaseData';
 import { addAllAssetsToDictionary } from './yomitan/addAllAssetsToDictionary';
 import yargs from 'yargs';
+import { PrismaClient } from '@prisma/client';
+import { articleGenerator } from './helpers/articleGenerator';
+export const prisma = new PrismaClient();
 
 (async () => {
   const argv = await yargs(process.argv.slice(2))
@@ -29,9 +32,8 @@ import yargs from 'yargs';
     console.log(`Running in dev mode, limiting to 5 articles.`);
   }
 
-  const { allArticles } = await getDatabaseData({
-    limit: devMode ? 5 : undefined,
-  });
+  const allArticlesCount = await prisma.pixivArticle.count();
+  console.log(`Found ${allArticlesCount} articles`);
 
   // YYYY-MM-DD
   const latestDateShort = new Date().toISOString().split('T')[0];
@@ -49,7 +51,7 @@ import yargs from 'yargs';
     url: `https://github.com/MarvNC/pixiv-yomitan`,
     title: `Pixiv${pixivLight ? ' Light' : ''} [${latestDateShort}]`,
     revision: getPackageVersion(),
-    description: `Article summaries from the Pixiv encyclopedia (ピクシブ百科事典), ${allArticles.length} articles included.${pixivLight ? ' Light mode.' : ''}
+    description: `Article summaries from the Pixiv encyclopedia (ピクシブ百科事典), ${allArticlesCount} articles included.${pixivLight ? ' Light mode.' : ''}
     Pixiv dumps used to build this found at https://github.com/MarvNC/pixiv-dump.
     Built with https://github.com/MarvNC/yomichan-dict-builder.`,
   });
@@ -61,10 +63,15 @@ import yargs from 'yargs';
     barIncompleteChar: '\u2591',
     hideCursor: true,
   });
+  
   console.log(`Building dictionary...`);
-  progressBar.start(allArticles.length, 0);
+  progressBar.start(allArticlesCount, 0);
+  
   let invalidCount = 0;
-  for (const article of allArticles) {
+
+  // Get article generator with limit of 20k
+  const articleGen = articleGenerator(20000);
+  for await (const article of articleGen) {
     if (!isValidArticle(article)) {
       invalidCount++;
       progressBar.increment();
@@ -80,8 +87,9 @@ import yargs from 'yargs';
   console.log(`Exporting dictionary...`);
   const stats = await dictionary.export('dist');
   console.log(`Exported ${stats.termCount} terms`);
-  const additionalTerms = stats.termCount - allArticles.length;
+  const additionalTerms = stats.termCount - allArticlesCount;
   if (additionalTerms > 0) {
     console.log(`(${additionalTerms} additional terms from brackets)`);
   }
+  await prisma.$disconnect();
 })();
