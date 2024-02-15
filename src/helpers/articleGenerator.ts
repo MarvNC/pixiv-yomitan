@@ -6,20 +6,34 @@ import { prisma } from '..';
  * @param limit The maximum number of articles to retrieve in each iteration.
  * @returns An asynchronous generator that yields articles.
  */
-export async function* articleGenerator(limit: number): AsyncGenerator<PixivArticle> {
+export async function* articleGenerator({
+  chunkCount,
+  articleLimit = Infinity,
+}: {
+  chunkCount: number;
+  articleLimit?: number;
+}): AsyncGenerator<PixivArticle> {
   let skip = 0;
+  let totalRetrieved = 0;
 
   while (true) {
-    const articles = await prisma.pixivArticle.findMany({ take: limit, skip });
+    const articles = await prisma.pixivArticle.findMany({
+      take: chunkCount,
+      skip,
+    });
 
     if (articles.length === 0) {
-      break;
+      return;
     }
 
     for (const article of articles) {
       yield article;
+      totalRetrieved++;
+      if (totalRetrieved >= articleLimit) {
+        return;
+      }
     }
 
-    skip += limit;
+    skip += chunkCount;
   }
 }

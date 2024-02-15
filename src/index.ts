@@ -8,6 +8,8 @@ import { addAllAssetsToDictionary } from './yomitan/addAllAssetsToDictionary';
 import yargs from 'yargs';
 import { PrismaClient } from '@prisma/client';
 import { articleGenerator } from './helpers/articleGenerator';
+import { DEV_MODE_ARTICLE_COUNT, CHUNK_COUNT } from './yomitan/constants';
+import { TERM_BANK_MAX_SIZE } from './yomitan/constants';
 export const prisma = new PrismaClient();
 
 (async () => {
@@ -26,9 +28,11 @@ export const prisma = new PrismaClient();
   );
 
   const devMode = isDevMode();
-  // If dev mode, limit to 5 articles
+  // If dev mode, limit article count
   if (devMode) {
-    console.log(`Running in dev mode, limiting to 5 articles.`);
+    console.log(
+      `Running in dev mode, limiting article count to ${DEV_MODE_ARTICLE_COUNT}.`,
+    );
   }
 
   const allArticlesCount = await prisma.pixivArticle.count();
@@ -39,7 +43,7 @@ export const prisma = new PrismaClient();
 
   const dictionary = new Dictionary({
     fileName: `Pixiv${pixivLight ? 'Light' : ''}_${latestDateShort}.zip`,
-    termBankMaxSize: 1000,
+    termBankMaxSize: TERM_BANK_MAX_SIZE,
   });
 
   await addAllAssetsToDictionary(dictionary);
@@ -62,14 +66,17 @@ export const prisma = new PrismaClient();
     barIncompleteChar: '\u2591',
     hideCursor: true,
   });
-  
+
   console.log(`Building dictionary...`);
   progressBar.start(allArticlesCount, 0);
-  
+
   let invalidCount = 0;
 
-  // Get article generator with limit of 20k
-  const articleGen = articleGenerator(20000);
+  // Get article generator with limit
+  const articleGen = articleGenerator({
+    chunkCount: CHUNK_COUNT,
+    articleLimit: devMode ? DEV_MODE_ARTICLE_COUNT : Infinity,
+  });
   for await (const article of articleGen) {
     if (!isValidArticle(article)) {
       invalidCount++;
@@ -85,7 +92,7 @@ export const prisma = new PrismaClient();
 
   console.log(`Exporting dictionary...`);
   const stats = await dictionary.export('dist');
-  console.log(`Exported ${stats.termCount} terms`);
+  console.log(`Exported ${stats.termCount} terms.`);
   const additionalTerms = stats.termCount - allArticlesCount;
   if (additionalTerms > 0) {
     console.log(`(${additionalTerms} additional terms from brackets)`);
