@@ -9,7 +9,16 @@ export function addParentInfo(
   if (!article.parent && !bracketContent) {
     return;
   }
+
   const parentSCArr: StructuredContentNode = [];
+
+  if (bracketContent && bracketContent !== article.parent) {
+    parentSCArr.push({
+      tag: 'div',
+      content: `(${bracketContent})`,
+    });
+  }
+
   if (article.parent) {
     parentSCArr.push({
       tag: 'a',
@@ -17,12 +26,7 @@ export function addParentInfo(
       href: `?query=${article.parent}`,
     });
   }
-  if (bracketContent && bracketContent !== article.parent) {
-    parentSCArr.push({
-      tag: 'span',
-      content: ` (${bracketContent})`,
-    });
-  }
+
   scList.push({
     tag: 'div',
     data: {
