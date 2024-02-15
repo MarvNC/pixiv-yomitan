@@ -4,7 +4,6 @@ import { addArticleToDictionary } from './yomitan/addArticleToDictionary';
 import { isDevMode } from './helpers/isDevMode';
 import { getPackageVersion } from './helpers/getPackageVersion';
 import { isValidArticle } from './helpers/isValidArticle';
-// import { getDatabaseData } from './helpers/getDatabaseData';
 import { addAllAssetsToDictionary } from './yomitan/addAllAssetsToDictionary';
 import yargs from 'yargs';
 import { PrismaClient } from '@prisma/client';
