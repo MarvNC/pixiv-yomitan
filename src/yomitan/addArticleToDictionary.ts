@@ -8,20 +8,28 @@ export async function addArticleToDictionary(
   pixivLight: boolean,
   dictionary: Dictionary,
 ) {
-  const entry = new TermEntry(article.tag_name);
-  entry.setReading(getArticleProcessedReading(article));
-  // const cleanHeadword = article.tag_name.trim();
+  const cleanHeadword = article.tag_name.trim();
+
+  const entry = new TermEntry(cleanHeadword);
+
   // Check for parentheses
-  const { noBracketsHeadword, bracketContent } = parseHeadwordBrackets(
-    article.tag_name,
-  );
+  const { noBracketsHeadword, bracketContent } =
+    parseHeadwordBrackets(cleanHeadword);
+
+  entry.setReading(getArticleProcessedReading(cleanHeadword, article.reading));
+
   entry.addDetailedDefinition(
     createDetailedDefinition(article, pixivLight, bracketContent),
   );
+
   await dictionary.addTerm(entry.build());
+
   // Add the clean headword without brackets if it exists
   if (bracketContent) {
     entry.setTerm(noBracketsHeadword);
+    entry.setReading(
+      getArticleProcessedReading(noBracketsHeadword, article.reading),
+    );
     await dictionary.addTerm(entry.build());
   }
 }
