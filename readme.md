@@ -1,12 +1,19 @@
 # Pixiv Encyclopedia for Yomitan
 
 Pixiv Encyclopedia for Yomitan is a conversion of the public
-[dic.pixiv.net](https://dic.pixiv.net/) encyclopedia of over 540,000 entries for
-[Yomitan](https://github.com/themoeway/yomitan), containing a summary and links
-to related articles for each entry. The Pixiv encyclopedia is quite extensive,
-with a particular focus on popular culture but containing entries for most
-things. For instance, 和泉妃愛 has an entry as does likely every notable VTuber,
-media franchise, and mountain in Japan.
+[Pixiv Encyclopedia (ピクシブ百科事典)](https://dic.pixiv.net/) of over 540,000
+entries for [Yomitan](https://github.com/themoeway/yomitan). The encyclopedia is
+quite extensive, with a focus on popular culture but containing entries for many
+proper nouns. For instance, 和泉妃愛 has an entry as does likely every notable
+VTuber, media franchise, and mountain in Japan.
+
+A new release of Pixiv for Yomitan is automatically created daily using data
+sourced from my [pixiv-dump](https://github.com/MarvNC/pixiv-dump) repository,
+where the data from Pixiv is scraped and uploaded as a database every day.
+
+Built using
+[yomichan-dict-builder](https://github.com/MarvNC/yomichan-dict-builder),
+[japanese-furigana-normalize](https://github.com/MarvNC/japanese-furigana-normalize).
 
 ## Usage
 
