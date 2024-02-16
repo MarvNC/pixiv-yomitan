@@ -18,6 +18,8 @@ export async function addArticleToDictionary(
 
   entry.setReading(getArticleProcessedReading(cleanHeadword, article.reading));
 
+  entry.setPopularity(article.view_count);
+
   entry.addDetailedDefinition(
     createDetailedDefinition(article, pixivLight, bracketContent),
   );
