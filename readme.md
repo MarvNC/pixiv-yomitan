@@ -1,5 +1,7 @@
 # Pixiv Encyclopedia for Yomitan
 
+[![](https://img.shields.io/github/v/tag/marvnc/pixiv-yomitan?style=for-the-badge&label=Last%20Release)](https://github.com/MarvNC/pixiv-yomitan/releases/latest)
+
 Pixiv Encyclopedia for Yomitan is a conversion of the public
 [Pixiv Encyclopedia (ピクシブ百科事典)](https://dic.pixiv.net/) of over 540,000
 entries for [Yomitan](https://github.com/themoeway/yomitan). The encyclopedia is
