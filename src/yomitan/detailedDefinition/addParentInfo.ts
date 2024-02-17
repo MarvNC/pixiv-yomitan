@@ -6,11 +6,7 @@ export function addParentInfo(
   scList: StructuredContentNode[],
   bracketContent: string,
 ) {
-  if (!article.parent && !bracketContent) {
-    return;
-  }
-
-  if (bracketContent && bracketContent !== article.parent) {
+  if (bracketContent) {
     scList.push({
       tag: 'div',
       content: `«${bracketContent}»`,
