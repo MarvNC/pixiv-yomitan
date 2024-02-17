@@ -14,8 +14,7 @@ sourced from the updated dumps at
 [pixiv-dump](https://github.com/MarvNC/pixiv-dump).
 
 Built using
-[yomichan-dict-builder](https://github.com/MarvNC/yomichan-dict-builder),
-[japanese-furigana-normalize](https://github.com/MarvNC/japanese-furigana-normalize).
+[yomichan-dict-builder](https://github.com/MarvNC/yomichan-dict-builder).
 
 ## Usage
 
