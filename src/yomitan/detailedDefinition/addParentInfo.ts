@@ -10,32 +10,33 @@ export function addParentInfo(
     return;
   }
 
-  const parentSCArr: StructuredContentNode = [];
-
   if (bracketContent && bracketContent !== article.parent) {
-    parentSCArr.push({
+    scList.push({
       tag: 'div',
-      content: `(${bracketContent})`,
+      content: `«${bracketContent}»`,
+      style: {
+        fontStyle: 'italic',
+      },
+      data: {
+        pixiv: 'series',
+      },
     });
   }
 
   if (article.parent) {
-    parentSCArr.push({
-      tag: 'a',
-      content: `←${article.parent}`,
-      href: `?query=${article.parent}`,
+    scList.push({
+      tag: 'div',
+      data: {
+        pixiv: 'parent-link',
+      },
+      style: {
+        fontWeight: 'bold',
+      },
+      content: {
+        tag: 'a',
+        content: `←${article.parent}`,
+        href: `?query=${article.parent}`,
+      },
     });
   }
-
-  scList.push({
-    tag: 'div',
-    data: {
-      pixiv: 'parent-info',
-    },
-    style: {
-      fontWeight: 'bold',
-      textDecorationStyle: 'dashed',
-    },
-    content: parentSCArr,
-  });
 }
