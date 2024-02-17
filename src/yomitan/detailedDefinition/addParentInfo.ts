@@ -15,7 +15,9 @@ export function addParentInfo(
       tag: 'div',
       content: `«${bracketContent}»`,
       style: {
-        fontStyle: 'italic',
+        fontWeight: 'bold',
+        fontSize: '1.3em',
+        color: '#e5007f',
       },
       data: {
         pixiv: 'series',
