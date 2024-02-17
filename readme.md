@@ -8,8 +8,8 @@ proper nouns. For instance, 和泉妃愛 has an entry as does likely every notab
 VTuber, media franchise, and mountain in Japan.
 
 A new release of Pixiv for Yomitan is automatically created daily using data
-sourced from my [pixiv-dump](https://github.com/MarvNC/pixiv-dump) repository,
-where the data from Pixiv is scraped and uploaded as a database every day.
+sourced from the updated dumps at
+[pixiv-dump](https://github.com/MarvNC/pixiv-dump).
 
 Built using
 [yomichan-dict-builder](https://github.com/MarvNC/yomichan-dict-builder),
@@ -30,6 +30,12 @@ Built using
 > These dictionaries are quite large and may take 2-20+ minutes to
 > import depending on your device. After import, as much as 500MB+ of 
 > storage may be consumed by Yomitan.
+
+## Screenshots
+
+|     |     |
+| --- | --- |
+|     |     |
 
 ## Development
 
