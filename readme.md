@@ -25,6 +25,8 @@ Built using
   - The `PixivLight` release is a lightweight version (though still quite large)
     of the encyclopedia, omitting the 概要 and 関連記事 to save on storage
     space.
+  - An MDict version of the dictionary from 2024-02-20 converted by an anon is
+    [available here](https://github.com/MarvNC/pixiv-yomitan/releases/tag/2024-02-20).
 
 <!-- prettier-ignore -->
 > [!IMPORTANT] 
