@@ -1,6 +1,6 @@
 import { PixivArticle } from '@prisma/client';
 import { StructuredContentNode } from 'yomichan-dict-builder/dist/types/yomitan/termbank';
-import { createImageNode } from './assetsFolder';
+import { createImageNode } from './createImageNode';
 
 export function addFooter(
   scList: StructuredContentNode[],
