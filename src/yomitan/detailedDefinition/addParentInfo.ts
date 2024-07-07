@@ -5,6 +5,7 @@ export function addParentInfo(
   article: PixivArticle,
   scList: StructuredContentNode[],
   bracketContent: string,
+  pixivLight: boolean,
 ) {
   if (bracketContent) {
     scList.push({
@@ -21,7 +22,49 @@ export function addParentInfo(
     });
   }
 
-  if (article.parent) {
+  if (article.header) {
+    const headerArray = JSON.parse(article.header) as string[];
+    if (!Array.isArray(headerArray)) {
+      throw new Error('header should be an array');
+    }
+    if (headerArray.length <= 2) {
+      return;
+    }
+    // Remove last element (current article)
+    headerArray.pop();
+    const parent = headerArray.pop();
+    if (!parent) {
+      return;
+    }
+    headerArray.reverse();
+    const parentLink: StructuredContentNode = {
+      tag: 'a',
+      content: `←${parent}`,
+      href: `?query=${parent}`,
+    };
+    const contentListInsideDetails: StructuredContentNode[] = [
+      {
+        tag: 'summary',
+        content: parentLink,
+      },
+    ];
+    if (headerArray.length > 1) {
+      // Create ul list of breadcrumbs within details block
+      contentListInsideDetails.push({
+        tag: 'ul',
+        content: headerArray.map((header) => ({
+          tag: 'li',
+          content: {
+            tag: 'a',
+            content: header,
+            href: `?query=${header}`,
+          },
+        })),
+        data: {
+          pixiv: 'series',
+        },
+      });
+    }
     scList.push({
       tag: 'div',
       data: {
@@ -30,11 +73,13 @@ export function addParentInfo(
       style: {
         fontWeight: 'bold',
       },
-      content: {
-        tag: 'a',
-        content: `←${article.parent}`,
-        href: `?query=${article.parent}`,
-      },
+      // If lightweight mode, just show parent link, otherwise show list of breadcrumbs
+      content: pixivLight
+        ? parentLink
+        : {
+            tag: 'details',
+            content: contentListInsideDetails,
+          },
     });
   }
 }

@@ -20,7 +20,7 @@
     "japanese-furigana-normalize": "^1.0.5",
     "prisma": "^5.9.1",
     "yargs": "^17.7.2",
-    "yomichan-dict-builder": "^2.5.0"
+    "yomichan-dict-builder": "^2.6.0"
   },
   "devDependencies": {
     "@types/cli-progress": "^3.11.5",
