@@ -16,7 +16,7 @@ export function createDetailedDefinition(
 ): DetailedDefinition {
   const scList: StructuredContentNode = [];
   // Parent tag/bracket stuff
-  addParentInfo(article, scList, bracketContent);
+  addParentInfo(article, scList, bracketContent, pixivLight);
   // Summary
   if (article.summary) {
     scList.push(
