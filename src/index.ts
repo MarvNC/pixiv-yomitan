@@ -70,7 +70,7 @@ export const prisma = new PrismaClient();
     Built with https://github.com/MarvNC/yomichan-dict-builder.`,
       isUpdatable: true,
       indexUrl: `https://github.com/MarvNC/pixiv-yomitan/releases/latest/download/${INDEX_FILENAME}`,
-      downloadUrl: `https://github.com/MarvNC/pixiv-yomitan/releases/${tagName}/${PIXIV_ZIP_FILENAME}`,
+      downloadUrl: `https://github.com/MarvNC/pixiv-yomitan/releases/download/${tagName}/${PIXIV_ZIP_FILENAME}`,
     },
     EXPORT_FOLDER,
     INDEX_FILENAME,
