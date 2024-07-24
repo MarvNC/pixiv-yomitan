@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node . && node . --light true",
-    "prestart": "npm run build",
+    "buildPixiv": "tsc && node . --light false",
+    "buildPixivLight": "tsc && node . --light true",
     "format": "prettier --write .",
     "prepare": "npx prisma generate"
   },
@@ -20,7 +20,7 @@
     "japanese-furigana-normalize": "^1.0.5",
     "prisma": "^5.9.1",
     "yargs": "^17.7.2",
-    "yomichan-dict-builder": "^2.6.0"
+    "yomichan-dict-builder": "^2.9.1"
   },
   "devDependencies": {
     "@types/cli-progress": "^3.11.5",
