@@ -64,7 +64,7 @@ export const prisma = new PrismaClient();
       attribution: `https://dic.pixiv.net`,
       url: `https://github.com/MarvNC/pixiv-yomitan`,
       title: `Pixiv${pixivLight ? ' Light' : ''} [${latestDateShort}]`,
-      revision: getPackageVersion(),
+      revision: latestDateShort,
       description: `Article summaries from the Pixiv encyclopedia (ピクシブ百科事典), ${allArticlesCount} articles included.${pixivLight ? ' Light mode.' : ''}
     Pixiv dumps used to build this found at https://github.com/MarvNC/pixiv-dump.
     Built with https://github.com/MarvNC/yomichan-dict-builder.`,
