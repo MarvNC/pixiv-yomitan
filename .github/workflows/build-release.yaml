@@ -42,7 +42,6 @@ jobs:
 
       - name: Build Dictionary
         run: |
-          npm run start
           npm run buildPixiv -- --tagName ${{ steps.date.outputs.date }}
           npm run buildPixivLight -- --tagName ${{ steps.date.outputs.date }}
         env:
