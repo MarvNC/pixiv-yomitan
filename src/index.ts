@@ -2,7 +2,6 @@ import { Dictionary } from 'yomichan-dict-builder';
 import { SingleBar } from 'cli-progress';
 import { addArticleToDictionary } from './yomitan/addArticleToDictionary';
 import { isDevMode } from './helpers/isDevMode';
-import { getPackageVersion } from './helpers/getPackageVersion';
 import { isValidArticle } from './helpers/isValidArticle';
 import { addAllAssetsToDictionary } from './yomitan/addAllAssetsToDictionary';
 import yargs from 'yargs';

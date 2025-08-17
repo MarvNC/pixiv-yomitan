@@ -3,7 +3,7 @@
 [![](https://img.shields.io/github/v/tag/marvnc/pixiv-yomitan?style=for-the-badge&label=Last%20Release)](https://github.com/MarvNC/pixiv-yomitan/releases/latest)
 
 Pixiv Encyclopedia for Yomitan is a conversion of the public
-[Pixiv Encyclopedia (ピクシブ百科事典)](https://dic.pixiv.net/) of over 540,000
+[Pixiv Encyclopedia (ピクシブ百科事典)](https://dic.pixiv.net/) of over 630,000
 entries for [Yomitan](https://github.com/themoeway/yomitan). The encyclopedia is
 quite extensive, with a focus on popular culture but containing entries for many
 proper nouns. For instance, 和泉妃愛 has an entry as does likely every notable
