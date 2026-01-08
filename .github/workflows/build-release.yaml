@@ -13,6 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
       - name: Get latest Pixiv dump URL
         id: get_url
         uses: actions/github-script@v5
@@ -34,18 +39,16 @@ jobs:
         run: wget -P db "${{ steps.get_url.outputs.result }}"
 
       - name: Install Dependencies
-        run: npm ci
+        run: bun install
 
       - name: Get Current Date
         id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
       - name: Build Dictionary
         run: |
-          npm run buildPixiv -- --tagName ${{ steps.date.outputs.date }}
-          npm run buildPixivLight -- --tagName ${{ steps.date.outputs.date }}
-        env:
-          NODE_OPTIONS: --max-old-space-size=4096
+          bun run buildPixiv -- --tagName ${{ steps.date.outputs.date }}
+          bun run buildPixivLight -- --tagName ${{ steps.date.outputs.date }}
 
       - name: Create and Publish Release
         uses: softprops/action-gh-release@v1

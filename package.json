@@ -5,11 +5,12 @@
   "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "buildPixiv": "tsc && node . --light false",
-    "buildPixivLight": "tsc && node . --light true",
+    "build": "bun run build:tsc",
+    "build:tsc": "tsc",
+    "buildPixiv": "bun run build:tsc && bun run . --light false",
+    "buildPixivLight": "bun run build:tsc && bun run . --light true",
     "format": "prettier --write .",
-    "prepare": "npx prisma generate"
+    "prepare": "npx --yes prisma@5.9.1 generate"
   },
   "author": "MarvNC",
   "license": "MIT",

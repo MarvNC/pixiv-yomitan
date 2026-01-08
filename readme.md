@@ -47,6 +47,17 @@ Built using
 
 ## Development
 
-This reads from `.env` (optional) for `NODE_ENV`. If it is set to `dev`, then
-the exported dictionary will contain fewer entries for faster exports and faster
+This project uses [Bun](https://bun.sh) as the runtime instead of Node.js for better performance and memory efficiency when building large dictionaries.
+
+### Setup
+
+1. Install Bun: `curl -fsSL https://bun.sh/install | bash`
+2. Install dependencies: `bun install`
+3. Build the project: `bun run build`
+4. Build the dictionary: `bun run buildPixiv` or `bun run buildPixivLight`
+
+### Development Mode
+
+Create a `.env` file (optional) and set `NODE_ENV=dev`. When in development mode, the
+exported dictionary will contain fewer entries (limited to 100) for faster exports and faster
 load times in Yomitan.
