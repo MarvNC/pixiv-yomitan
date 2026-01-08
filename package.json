@@ -10,7 +10,7 @@
     "buildPixiv": "bun run build:tsc && bun run . --light false",
     "buildPixivLight": "bun run build:tsc && bun run . --light true",
     "format": "prettier --write .",
-    "prepare": "bunx prisma generate"
+    "prepare": "npx --yes prisma@5.9.1 generate"
   },
   "author": "MarvNC",
   "license": "MIT",
