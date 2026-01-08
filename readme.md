@@ -58,6 +58,6 @@ This project uses [Bun](https://bun.sh) as the runtime instead of Node.js for be
 
 ### Development Mode
 
-This reads from `.env` (optional) for `NODE_ENV`. If it is set to `dev`, then
-the exported dictionary will contain fewer entries for faster exports and faster
+Create a `.env` file (optional) and set `NODE_ENV=dev`. When in development mode, the
+exported dictionary will contain fewer entries (limited to 100) for faster exports and faster
 load times in Yomitan.
