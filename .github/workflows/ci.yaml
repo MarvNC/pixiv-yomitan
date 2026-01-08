@@ -1,4 +1,4 @@
-name: Build
+name: CI
 
 on:
   push:
@@ -7,6 +7,44 @@ on:
     branches: [main]
 
 jobs:
+  prettier:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install Dependencies
+        run: bun install
+
+      - name: Run Prettier Check
+        run: bun run format:check
+
+  eslint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install Dependencies
+        run: bun install
+
+      - name: Run ESLint
+        run: bun run lint
+
   build:
     runs-on: ubuntu-latest
     permissions:
