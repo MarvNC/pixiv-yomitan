@@ -10,6 +10,10 @@
     "buildPixiv": "bun run build:tsc && bun run . --light false",
     "buildPixivLight": "bun run build:tsc && bun run . --light true",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "fetch-db": "bun run build:tsc && bun run build/scripts/fetchDatabase.js",
     "prepare": "npx --yes prisma@5.9.1 generate"
   },
   "author": "MarvNC",

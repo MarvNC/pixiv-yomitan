@@ -4,6 +4,7 @@ module.exports = {
     node: true,
   },
   extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+  ignorePatterns: ['build/**', 'dist/**', 'node_modules/**'],
   overrides: [
     {
       env: {

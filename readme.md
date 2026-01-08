@@ -47,7 +47,8 @@ Built using
 
 ## Development
 
-This project uses [Bun](https://bun.sh) as the runtime instead of Node.js for better performance and memory efficiency when building large dictionaries.
+This project uses [Bun](https://bun.sh) as the runtime instead of Node.js for
+better performance and memory efficiency when building large dictionaries.
 
 ### Setup
 
@@ -58,6 +59,6 @@ This project uses [Bun](https://bun.sh) as the runtime instead of Node.js for be
 
 ### Development Mode
 
-Create a `.env` file (optional) and set `NODE_ENV=dev`. When in development mode, the
-exported dictionary will contain fewer entries (limited to 100) for faster exports and faster
-load times in Yomitan.
+Create a `.env` file (optional) and set `NODE_ENV=dev`. When in development
+mode, the exported dictionary will contain fewer entries (limited to 100) for
+faster exports and faster load times in Yomitan.
