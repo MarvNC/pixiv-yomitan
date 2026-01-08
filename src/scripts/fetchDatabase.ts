@@ -6,6 +6,16 @@ const PIXIV_DUMP_REPO = 'MarvNC/pixiv-dump';
 const DB_FILENAME = 'pixiv.db';
 const DB_DIR = join(process.cwd(), 'db');
 
+interface GitHubAsset {
+  name: string;
+  browser_download_url: string;
+  size: number;
+}
+
+interface GitHubRelease {
+  assets: GitHubAsset[];
+}
+
 /**
  * Fetches the latest Pixiv database dump from GitHub releases
  */
@@ -40,12 +50,10 @@ async function fetchDatabase() {
       );
     }
 
-    const release = await releaseResponse.json();
+    const release: GitHubRelease = await releaseResponse.json();
 
     // Find the pixiv.db asset
-    const asset = release.assets.find(
-      (a: { name: string }) => a.name === DB_FILENAME,
-    );
+    const asset = release.assets.find((a) => a.name === DB_FILENAME);
 
     if (!asset) {
       throw new Error(`Asset '${DB_FILENAME}' not found in latest release`);
