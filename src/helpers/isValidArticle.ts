@@ -124,7 +124,6 @@ const INVALID_SUMMARY_PATTERNS: readonly RegExp[] = [
   /^[ー-]+$/,
 ] as const;
 
-
 type ParsedHeaders = {
   headers: string[];
   parseFailed: boolean;
