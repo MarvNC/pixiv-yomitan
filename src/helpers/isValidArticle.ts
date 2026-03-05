@@ -10,7 +10,7 @@ const FILTERED_PARENT_CATEGORIES = new Set([
   '虚無記事', // Void articles
   '立て逃げ記事', // Hit-and-run articles
   '意味のない記事', // Meaningless articles
-  '誤記一覧', // List of misprints (maybe worth keeping)
+  //'誤記一覧', // List of misprints (maybe worth keeping)
 ]);
 
 const PUNCTUATION_PATTERN = '[・…。．.、,!?！？:\\s　-]';
