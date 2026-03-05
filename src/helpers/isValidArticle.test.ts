@@ -27,7 +27,7 @@ function createArticle(overrides: Partial<PixivArticle> = {}): PixivArticle {
 function assertSummaryGroupValidity(
   summaries: readonly string[],
   expectedValid: boolean,
-  group: string
+  group: string,
 ): void {
   const failures: string[] = [];
 
@@ -39,14 +39,14 @@ function assertSummaryGroupValidity(
       const expectedState = expectedValid ? 'valid' : 'invalid';
       const actualState = actualValid ? 'valid' : 'invalid';
       failures.push(
-        `[${group}] expected ${expectedState}, got ${actualState} | summary: ${summary}`
+        `[${group}] expected ${expectedState}, got ${actualState} | summary: ${summary}`,
       );
     }
   }
 
   if (failures.length > 0) {
     throw new Error(
-      `${group} mismatches: ${failures.length}\n${failures.join('\n')}`
+      `${group} mismatches: ${failures.length}\n${failures.join('\n')}`,
     );
   }
 }
@@ -306,6 +306,8 @@ const invalidSummaries = [
   '白紙化しましたが、執筆をお願いいたします。',
   '白紙化すれば良い 誰か消してや',
   '不要記事として処理。',
+  '消去しました',
+  '記事を消去しました。',
   '不要記事なので消しました',
   '不要記事なので消去します。',
   '不要記事により削 除',
@@ -313,6 +315,30 @@ const invalidSummaries = [
   '本記事は悪質ユーザーによる立て逃げ記事です。正しい記事内容を作成できる方は記事の執筆をお願い致します。なお、第三者の権利を侵害しないよう十分注意してください。',
   '本稿では白紙化として編集します。',
   '目的とはずれた内容であったため削除タグとしています。',
+  '【無効記事:タグとして使用不可の全角英数扱いの文字が記事名に入っているため、pixiv作品と本記事がリンクできません。】新規の記事を作るには、記事名に全角記号やスペース(空白)を使わず、タグの制限字数',
+  '※記事の作成ミスです。',
+  'この記事は、記事立項が不適切な状況で不十分な内容のまま新規作成されたものである。',
+  '※該当キャラクターの作者はpixivを退会されました。現在使われていないタグです。',
+  '乱立された立て逃げ記事。',
+  '悪質ユーザーによる立て逃げ。',
+  'この記事タイトルは、使用されていないタグの1つ。',
+  '当記事は転送記事化しました',
+  '※悪質ユーザーによる立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。',
+  '悪質ユーザーによる立て逃げ記事',
+  '荒らしユーザーによる立て逃げ記事',
+  '悪質ユーザーによる立て逃げ記事。',
+  'タグとして使われていないうえ、立て逃げされた記事です。',
+  '乱立された立て逃げ記事',
+  '（※悪質ユーザーによる立て逃げ記事のため、需要のある記事・タグの場合も一時白紙化しています。収まりがつき次第、正しい記事内容を作成できる方は記事の執筆をお願い致します。なお、第三者の権利を侵害しないよ',
+  '体を成していない記事の立て逃げを繰り返す「サミュエル江藤智氏（元・石油泥棒氏）」による乱立記事。',
+  '一連の立て逃げ記事です。',
+  '悪質ユーザーによる立て逃げ記事です。',
+  '現在pixiv内で使用されていない項目。立て逃げ記事です。',
+  '荒らしユーザーによる立て逃げ記事。',
+  'タグとしての利用価値のない立て逃げ記事。',
+  '悪質ユーザーによる立て逃げ',
+  '荒らしによる立て逃げと悪質な保守が行われている記事',
+  '体を成していない記事の立て逃げを繰り返すユーザーによる乱立記事。',
 ] as const;
 
 const invalidHeaderCases = [
@@ -337,7 +363,7 @@ describe('isValidArticle', () => {
       const actualValid = isValidArticle(article);
       if (actualValid) {
         throw new Error(
-          `[headers] expected invalid, got valid | headers: ${JSON.stringify(headers)}`
+          `[headers] expected invalid, got valid | headers: ${JSON.stringify(headers)}`,
         );
       }
     }
@@ -353,7 +379,7 @@ describe('isValidArticle', () => {
     const actualValid = isValidArticle(article);
     if (!actualValid) {
       throw new Error(
-        'expected valid when filtered keyword appears only as terminal self header'
+        'expected valid when filtered keyword appears only as terminal self header',
       );
     }
   });
@@ -371,6 +397,30 @@ describe('isValidArticle', () => {
     }
   });
 
+  it('keeps known valid article from db: 立て逃げ', () => {
+    const article = createArticle({
+      tag_name: '立て逃げ',
+      summary: '立て逃げとは、電子掲示板などにおける迷惑行為の一種。',
+      header: JSON.stringify([
+        'ピクシブ百科事典',
+        '一般',
+        '社会',
+        'インフラ',
+        'ネットワーク',
+        'コンピュータネットワーク',
+        'インターネット',
+        'ネットマナー',
+        '迷惑行為',
+        '立て逃げ',
+      ]),
+      reading: 'たてにげ',
+    });
+    const actualValid = isValidArticle(article);
+    if (!actualValid) {
+      throw new Error('expected valid for known db record');
+    }
+  });
+
   it('keeps valid summaries', () => {
     assertSummaryGroupValidity(validSummaries, true, 'valid summary');
   });
@@ -380,7 +430,7 @@ describe('isValidArticle', () => {
     assertSummaryGroupValidity(
       uniqueInvalidSummaries,
       false,
-      'invalid summary'
+      'invalid summary',
     );
   });
 });
