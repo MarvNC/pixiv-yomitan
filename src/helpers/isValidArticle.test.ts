@@ -77,6 +77,18 @@ describe('isValidArticle', () => {
       expectSummaryToBeValid('削除とは、不要記事につき削除');
     });
 
+    it('keeps factual summaries even when filtered phrases are only in parentheses', () => {
+      expectSummaryToBeValid(
+        'ステロイド外用薬の一種。(※悪質ユーザーによる立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。)'
+      );
+    });
+
+    it('keeps factual summaries with full-width parenthesized moderation notes', () => {
+      expectSummaryToBeValid(
+        'ゲーム「クライミライ」シリーズの第3弾。（※悪質ユーザーによる立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。）'
+      );
+    });
+
   });
 
   describe('invalid articles', () => {
@@ -101,6 +113,12 @@ describe('isValidArticle', () => {
     it('returns false for 立て逃げ記事 summary with moderation note', () => {
       expectSummaryToBeInvalid(
         '※立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。'
+      );
+    });
+
+    it('returns false when summary is only a parenthesized moderation note', () => {
+      expectSummaryToBeInvalid(
+        '(※悪質ユーザーによる立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。)'
       );
     });
 

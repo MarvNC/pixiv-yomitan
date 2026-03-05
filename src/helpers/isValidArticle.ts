@@ -1,8 +1,9 @@
 import { PixivArticle } from '@prisma/client';
 
-const filteredParentCategories = new Set(['荒らし記事', '不要記事', '削除記事', '立て逃げ記事', '意味のない記事']);
+const filteredParentCategories = new Set(['荒らし記事','自演記事', '不要記事', '白紙化', '削除記事', '立て逃げ記事', '意味のない記事']);
 const dashOnlySummaryPattern = /^[ー-]+$/;
 const trailingSummaryPunctuationPattern = /[。．.、,!?！？]+$/u;
+const parenthesizedSegmentPattern = /\([^()]*\)|（[^（）]*）/gu;
 const endingVerbSuffixPattern =
   '(?:します|しました|しています|致します|致しました|させていただきます)?';
 const blankingSummaryEndingPattern = new RegExp(
@@ -43,6 +44,20 @@ function isInvalidSummary(summary: string): boolean {
   return invalidSummaryPatterns.some((pattern) => pattern.test(summary));
 }
 
+function normalizeSummary(summary: string): string {
+  return summary.trim().replace(trailingSummaryPunctuationPattern, '');
+}
+
+function stripParenthesizedSegments(summary: string): string {
+  let previous = summary;
+  let stripped = previous.replace(parenthesizedSegmentPattern, '');
+  while (stripped !== previous) {
+    previous = stripped;
+    stripped = previous.replace(parenthesizedSegmentPattern, '');
+  }
+  return stripped;
+}
+
 export function isValidArticle(article: PixivArticle): boolean {
   // Check if article is in a troll category
   const parsedHeaders: unknown = JSON.parse(article.header || '[]');
@@ -58,16 +73,31 @@ export function isValidArticle(article: PixivArticle): boolean {
   // Filter deleted/blanked vandalism summaries.
 
   // Normalize summary by trimming and removing trailing punctuation for comparison.
-  const normalizedSummary = article.summary
-    .trim()
-    .replace(trailingSummaryPunctuationPattern, '');
+  const normalizedSummary = normalizeSummary(article.summary);
 
   // If the summary contains the definition marker 'とは', it's likely a valid article, even if it has other patterns.
   if (normalizedSummary.includes(definitionMarker)) {
     return true;
   }
 
-  if (isInvalidSummary(normalizedSummary)) {
+  // Ignore moderation notes that appear only inside parentheses.
+  const normalizedSummaryWithoutParentheses = normalizeSummary(
+    stripParenthesizedSegments(normalizedSummary)
+  );
+
+  if (
+    normalizedSummaryWithoutParentheses &&
+    isInvalidSummary(normalizedSummaryWithoutParentheses)
+  ) {
+    return false;
+  }
+
+  // If nothing meaningful remains after removing parenthesized segments,
+  // fall back to the original summary so pure moderation notes still get filtered.
+  if (
+    !normalizedSummaryWithoutParentheses &&
+    isInvalidSummary(normalizedSummary)
+  ) {
     return false;
   }
 
