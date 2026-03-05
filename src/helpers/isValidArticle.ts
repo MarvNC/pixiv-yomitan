@@ -1,6 +1,6 @@
 import { PixivArticle } from '@prisma/client';
 
-const filteredParentCategories = new Set(['荒らし記事','自演記事', '不要記事', '白紙化', '削除記事', '立て逃げ記事', '意味のない記事']);
+const filteredParentCategories = new Set(['隔離記事', '荒らし記事','自演記事', '不要記事', '白紙化', '削除記事', '立て逃げ記事', '意味のない記事']);
 const dashOnlySummaryPattern = /^[ー-]+$/;
 const trailingSummaryPunctuationPattern = /[。．.、,!?！？]+$/u;
 const parenthesizedSegmentPattern = /\([^()]*\)|（[^（）]*）/gu;
@@ -33,11 +33,8 @@ const invalidSummaryPatterns = [
   dashOnlySummaryPattern,
 ] as const;
 
-function hasFilteredParentCategory(headers: string[]): boolean {
-  const parentCategories = headers.slice(0, -1);
-  return parentCategories.some((category) =>
-    filteredParentCategories.has(category)
-  );
+function hasFilteredCategory(headers: string[]): boolean {
+  return headers.some((category) => filteredParentCategories.has(category));
 }
 
 function isInvalidSummary(summary: string): boolean {
@@ -66,7 +63,7 @@ export function isValidArticle(article: PixivArticle): boolean {
   }
 
   const headers = parsedHeaders as string[];
-  if (hasFilteredParentCategory(headers)) {
+  if (hasFilteredCategory(headers)) {
     return false;
   }
 

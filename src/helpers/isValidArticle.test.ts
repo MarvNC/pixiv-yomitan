@@ -41,20 +41,6 @@ describe('isValidArticle', () => {
       expect(isValidArticle(article)).toBe(true);
     });
 
-    it('returns true when troll category is only the last header item', () => {
-      const article = createArticle({
-        header: JSON.stringify(['カテゴリ', '荒らし記事']),
-      });
-      expect(isValidArticle(article)).toBe(true);
-    });
-
-    it('returns true when filtered category is only the last header item', () => {
-      const article = createArticle({
-        header: JSON.stringify(['カテゴリ', '不要記事']),
-      });
-      expect(isValidArticle(article)).toBe(true);
-    });
-
     it('returns true for summaries containing non-dash text', () => {
       expectSummaryToBeValid('ーーー更新あり');
     });
@@ -95,6 +81,20 @@ describe('isValidArticle', () => {
     it('returns false when parent categories include a troll category', () => {
       const article = createArticle({
         header: JSON.stringify(['カテゴリ', '荒らし記事', '末端カテゴリ']),
+      });
+      expect(isValidArticle(article)).toBe(false);
+    });
+
+    it('returns false when troll category is the last header item', () => {
+      const article = createArticle({
+        header: JSON.stringify(['カテゴリ', '荒らし記事']),
+      });
+      expect(isValidArticle(article)).toBe(false);
+    });
+
+    it('returns false when filtered category is the last header item', () => {
+      const article = createArticle({
+        header: JSON.stringify(['カテゴリ', '不要記事']),
       });
       expect(isValidArticle(article)).toBe(false);
     });
