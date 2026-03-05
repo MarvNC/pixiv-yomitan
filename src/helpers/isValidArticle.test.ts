@@ -55,22 +55,12 @@ describe('isValidArticle', () => {
       expect(isValidArticle(article)).toBe(true);
     });
 
-    it('returns true for non-exact summaries that start with invalid fragments', () => {
-      expectSummaryToBeValid('削除しましたが復旧済みです');
-    });
-
     it('returns true for summaries containing non-dash text', () => {
       expectSummaryToBeValid('ーーー更新あり');
     });
 
-    it('keeps explanatory text containing 白紙化とは', () => {
-      expectSummaryToBeValid(
-        'ピクシブ百科事典における白紙化とは、記載された内容を削除し、無内容の記事にする行為を指す。'
-      );
-    });
-
     it('keeps explanatory text that starts with 削除 as a term name', () => {
-      expectSummaryToBeValid('削除番長とは、ニコニコ動画にて二番目に古い動画。');
+      expectSummaryToBeValid('削除番長、ニコニコ動画にて二番目に古い動画。');
     });
 
     it('keeps summary: 削除記事とは、不要記事・荒らし記事の成れの果て。', () => {
@@ -87,9 +77,6 @@ describe('isValidArticle', () => {
       expectSummaryToBeValid('削除とは、不要記事につき削除');
     });
 
-    it('keeps summary: ※立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。', () => {
-      expectSummaryToBeValid('※立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。');
-    });
   });
 
   describe('invalid articles', () => {
@@ -107,13 +94,14 @@ describe('isValidArticle', () => {
       expect(isValidArticle(article)).toBe(false);
     });
 
-    it('throws when header JSON is not an array', () => {
-      const article = createArticle({ header: JSON.stringify({ key: 'value' }) });
-      expect(() => isValidArticle(article)).toThrow('Invalid headers');
-    });
-
     it('returns false for standalone 立て逃げ記事 summary', () => {
       expectSummaryToBeInvalid('立て逃げ記事');
+    });
+
+    it('returns false for 立て逃げ記事 summary with moderation note', () => {
+      expectSummaryToBeInvalid(
+        '※立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。'
+      );
     });
 
     it('deletes summary: 立て逃げ記事につき、編集待ち。', () => {

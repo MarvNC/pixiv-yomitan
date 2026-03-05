@@ -14,7 +14,7 @@ const deletionSummaryEndingPattern = new RegExp(
   'u'
 );
 const abandonedArticleSummaryPattern =
-  /立て逃げ記事(?:$|[、,\s]*(?:につき|なので|であるため|のため|かつ|により))/u;
+  /立て逃げ記事(?:$|.*(?:につき|なので|であるため|のため|かつ|により))/u;
 const unwantedArticleTerminalPattern = /不要記事(?:に)?$/u;
 const unwantedArticleApplicablePattern = new RegExp(
   `不要記事に(?:該当)?${endingVerbSuffixPattern}$`,
