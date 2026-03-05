@@ -24,19 +24,29 @@ function createArticle(overrides: Partial<PixivArticle> = {}): PixivArticle {
   };
 }
 
-function assertSummaryValidity(
-  summary: string,
+function assertSummaryGroupValidity(
+  summaries: readonly string[],
   expectedValid: boolean,
   group: string
 ): void {
-  const article = createArticle({ summary });
-  const actualValid = isValidArticle(article);
+  const failures: string[] = [];
 
-  if (actualValid !== expectedValid) {
-    const expectedState = expectedValid ? 'valid' : 'invalid';
-    const actualState = actualValid ? 'valid' : 'invalid';
+  for (const summary of summaries) {
+    const article = createArticle({ summary });
+    const actualValid = isValidArticle(article);
+
+    if (actualValid !== expectedValid) {
+      const expectedState = expectedValid ? 'valid' : 'invalid';
+      const actualState = actualValid ? 'valid' : 'invalid';
+      failures.push(
+        `[${group}] expected ${expectedState}, got ${actualState} | summary: ${summary}`
+      );
+    }
+  }
+
+  if (failures.length > 0) {
     throw new Error(
-      `[${group}] expected ${expectedState}, got ${actualState} | summary: ${summary}`
+      `${group} mismatches: ${failures.length}\n${failures.join('\n')}`
     );
   }
 }
@@ -54,6 +64,16 @@ const validSummaries = [
   'ソニックフロンティアにおける天の声。ネタバレの都合上、ここではひとまず天の声と呼称する。名称が安定しないため討論の発生・場合によっては白紙化する可能性あり。',
   '隔離記事（pixiv）の項目を参照',
   '日本の国家資格・職業の一つ。(※悪質ユーザーによる立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。)',
+  '(フェアリーテイル)に登場する用語',
+  '「アサシンクリードシャドウズ炎上騒動」に関連して提唱された概念。',
+  '主に人名である。',
+  'ひらがな、読み仮名。',
+  'めろねの嫁である。',
+  '「コードギアス」を捩った暴走万葉仮名。',
+  'ひらがな、漢字の読み。',
+  '「ダンケルク」は2017年に公開されたクリストファー・ノーラン監督の戦争映画。',
+  '「つまッチ」とは、佐藤勝利と橋本将生のコンビ名である。',
+  '「とあるシリーズ」のブルマタグ。',
 ] as const;
 
 const invalidSummaries = [
@@ -200,6 +220,91 @@ const requestedInvalidSummaries = [
   '本記事は、自作自演記事につき、このような悪例が増えることを防止する目的で撤去されました。',
 ] as const;
 
+const newlyReportedInvalidSummaries = [
+  '【 情報削除済 】',
+  '【不要記事: タグが使用されていない、需要が限定的である】新規の記事を作るには、タグや重複してないか、ピクシブ百科事典に合うのかを考えて記事を作ってください。',
+  '【不要記事:記事の重複や乱立、ガイドライン違反】新規の記事を作るには、タグや重複してないか、ピクシブ百科事典に合うのかを考えて記事を作ってください。',
+  '＊この項目は削除されているか、もしくは初めから存在していません＊',
+  '＊削除しました＊',
+  '※この記事はpixivの利用規約に反していたため削除しました。',
+  '※この記事は削除されました※',
+  '※記事タイトルを間違えたので白紙化しました。 「んっ」について知りたい方は別の記事をお探しください。',
+  '<<類似記事が存在していたので白紙化しました>>',
+  '<この記事は作成者本人の意向で白紙化されました>',
+  '2024年時点では一般的に使われている語句とはいえず内容も滅茶苦茶だったため削除',
+  'ここは白紙化しようと思っています。',
+  'この”記事”を《削除》しました。━━━この対局を見極めるためにもな…━━━',
+  'この企画は既に終了している為、記事の削除を行いました。ご参加、ありがとうございました。',
+  'この記事は使う人がいないため白紙化します。誠に申し訳ございません。',
+  'この記事は白紙化、現在pixiv内に当タグで投稿された作品はありません。',
+  'この記事は白紙化されました………？',
+  'この記事は白紙化しました。申し訳ございません。',
+  'この記事は利用規約により削除されました。 いままでの開覧、ありがとうございました。',
+  'ごめんなさいミスあったので削除待ちです',
+  'ご指摘を頂き、記事内容を削除させていただきます。利用者の皆様、申し訳ありませんでした。',
+  'タグが機能していないため白紙化された項目',
+  'タグとして機能しておらず、独立した記事を作る必要性の低い内容である為不要記事と判断しました。',
+  'タグ分類に必要なものとは思えず、このような記事を作っていくと際限なく続くため、削除されております。',
+  '機能していない記事のため削除します。せめて一つに絞らなければ一覧として機能しないですよ。',
+  '規約に反するため削除とします。',
+  '記事タイトルに誤りがあったため白紙化された。',
+  '記事の作成ミスのため、記事内容を削除・白紙化しております。詳細は『コウリツ』を参照。',
+  '記事作成ミスのため白紙化。転送',
+  '記事白紙化。これはpixivの記事にするような内容ではない。',
+  '誤記及び不要記事です・・・・・・・',
+  '誤作成につき不要記事とします。',
+  '誤字のため、不要記事とする',
+  '荒らし記事です、編集しないで下さい',
+  '荒らし記事で白紙にしました',
+  '作者がこの学校を閉校したため白紙化&転送',
+  '作者様の意向により不要記事化',
+  '削除させてもらいました',
+  '削除したいです、、、、',
+  '削除しました・・・・・',
+  '削除しました。データがありません。',
+  '削除完了しました。',
+  '削除済みです。 20257.20',
+  '削除待ちです。 暫くお待ちください。',
+  '事情により削除 何方かによる編集をお願いします',
+  '自演記事+スペース入り記事です',
+  '自演記事となっています。',
+  '自作自演記事のため処置させていただきました。',
+  '自作自演記事は作ってはいけません。',
+  '執筆者の申立てによる削除記事です',
+  '重複記事のため不要記事化',
+  '序盤投稿記事の内容がふざけているため白紙化 尚白紙化した本人はスターレイルを知らないため、もし本当にこれ存在するのであれば書き直しをお願いします。',
+  '題名ミスで白紙化したので、新規投稿しました',
+  '全角英数入り記事のため白紙化・転送記事化。',
+  '全角記号が含まれており、タグとして使えない記事且つ自演記事に当たる',
+  '転送済み、本記事は削除要請中です。',
+  '※(記事が削除できず、せっかくなので自演投稿してます) 作者：七時ねるる｜ジャンル：異世界ファンタジー 初出：2024年6月～ 小説家になろう・カクヨムにて連載中 『無敵先輩 ～冒険に巻',
+  '一時的に白紙化処理をしています。',
+  '該当作品がないため白紙化。 また、日本語的に正しくは『体型』もしくは『体形』である。',
+  '該当作品がないため白紙化。また、日本語的に正しくは『体型』もしくは『体形』である。',
+  '使用されていないタグにつき白紙化された項目',
+  '既に削除されていたが、検索の障害となっていたので加筆修正',
+  '走るチルノとはうわなにするやめｒ（筆者は削除されました）',
+  '特にないので白紙化 ＿',
+  '白紙化された人物のことである',
+  '白紙化されました。内容はサーシャ(不遇水魔法の禁忌術式）に移されています。',
+  '白紙化して移しました。',
+  '白紙化しました・・・・・・・・',
+  '白紙化しました、理由は概要に',
+  '白紙化しました。 しばらく監視します',
+  '白紙化しました。 小説は残しております。',
+  '白紙化しました。Pixivの小説で描け',
+  '白紙化しましたが、執筆をお願いいたします。',
+  '白紙化すれば良い 誰か消してや',
+  '不要記事として処理。',
+  '不要記事なので消しました',
+  '不要記事なので消去します。',
+  '不要記事により削 除',
+  '不要記事の為消去しました',
+  '本記事は悪質ユーザーによる立て逃げ記事です。正しい記事内容を作成できる方は記事の執筆をお願い致します。なお、第三者の権利を侵害しないよう十分注意してください。',
+  '本稿では白紙化として編集します。',
+  '目的とはずれた内容であったため削除タグとしています。',
+] as const;
+
 const invalidHeaderCases = [
   ['カテゴリ', '荒らし記事', '末端カテゴリ'],
   ['カテゴリ', '荒らし記事'],
@@ -229,9 +334,7 @@ describe('isValidArticle', () => {
   });
 
   it('keeps valid summaries', () => {
-    for (const summary of validSummaries) {
-      assertSummaryValidity(summary, true, 'valid summary');
-    }
+    assertSummaryGroupValidity(validSummaries, true, 'valid summary');
   });
 
   it('rejects invalid summaries', () => {
@@ -239,12 +342,14 @@ describe('isValidArticle', () => {
       ...invalidSummaries,
       ...highFrequencyInvalidSummaries,
       ...requestedInvalidSummaries,
+      ...newlyReportedInvalidSummaries,
     ];
 
     const uniqueInvalidSummaries = [...new Set(allInvalidSummaries)];
-    for (const summary of uniqueInvalidSummaries) {
-      assertSummaryValidity(summary, false, 'invalid summary');
-    }
+    assertSummaryGroupValidity(
+      uniqueInvalidSummaries,
+      false,
+      'invalid summary'
+    );
   });
 });
-
