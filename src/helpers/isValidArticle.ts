@@ -5,7 +5,7 @@ const dashOnlySummaryPattern = /^[ー-]+$/;
 const trailingSummaryPunctuationPattern = /[。．.、,!?！？]+$/u;
 const parenthesizedSegmentPattern = /\([^()]*\)|（[^（）]*）/gu;
 const endingVerbSuffixPattern =
-  '(?:します|しました|しています|致します|致しました|させていただきます)?';
+  '(?:します|しました|しています|しております|致します|致しました|致しております|させていただきます)?';
 const blankingSummaryEndingPattern = new RegExp(
   `(白紙化${endingVerbSuffixPattern}|白紙化された記事です)$`,
   'u'
@@ -15,19 +15,25 @@ const deletionSummaryEndingPattern = new RegExp(
   'u'
 );
 const abandonedArticleSummaryPattern =
-  /立て逃げ記事(?:$|.*(?:につき|なので|であるため|のため|かつ|により))/u;
+  /立て逃げ記事(?:$|です$|.*(?:につき|なので|であるため|のため|かつ|により))/u;
+const trollArticleSummaryEndingPattern = /(?:荒らし記事|自演記事)(?:です)?$/u;
 const unwantedArticleTerminalPattern = /不要記事(?:に)?$/u;
 const unwantedArticleApplicablePattern = new RegExp(
   `不要記事に(?:該当)?${endingVerbSuffixPattern}$`,
   'u'
 );
-const unusedTagSummaryPattern = /^※?現在使われていないタグです$/u;
+const unusedTagSummaryPattern =
+  /^※?(?:現在)?(?:使われていない|使用されていない)タグ(?:です)?$/u;
+const unwantedUnusedTagSummaryPattern =
+  /^不要記事(?:\s|　)+(?:使われていない|使用されていない)タグ(?:です)?$/u;
 const definitionMarker = 'とは';
 const invalidSummaryPatterns = [
   abandonedArticleSummaryPattern,
+  trollArticleSummaryEndingPattern,
   unwantedArticleTerminalPattern,
   unwantedArticleApplicablePattern,
   unusedTagSummaryPattern,
+  unwantedUnusedTagSummaryPattern,
   blankingSummaryEndingPattern,
   deletionSummaryEndingPattern,
   dashOnlySummaryPattern,

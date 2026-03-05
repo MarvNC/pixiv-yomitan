@@ -247,5 +247,25 @@ describe('isValidArticle', () => {
     it('deletes summary: 誤って作成した記事であるため白紙化致しました', () => {
       expectSummaryToBeInvalid('誤って作成した記事であるため白紙化致しました');
     });
+
+    it('deletes summary: 一連の乱立立て逃げ記事です。', () => {
+      expectSummaryToBeInvalid('一連の乱立立て逃げ記事です。');
+    });
+
+    it('deletes summary: ※タグとしての需要がないため、記事内容を白紙化しております。', () => {
+      expectSummaryToBeInvalid('※タグとしての需要がないため、記事内容を白紙化しております。');
+    });
+
+    it('deletes summary: ただの荒らし記事です', () => {
+      expectSummaryToBeInvalid('ただの荒らし記事です');
+    });
+
+    it('deletes summary: 自演記事。', () => {
+      expectSummaryToBeInvalid('自演記事。');
+    });
+
+    it('deletes summary: 不要記事 使用されていないタグ', () => {
+      expectSummaryToBeInvalid('不要記事 使用されていないタグ');
+    });
   });
 });
