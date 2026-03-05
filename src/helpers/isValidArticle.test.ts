@@ -116,9 +116,6 @@ const invalidSummaries = [
   'ただの荒らし記事です',
   '自演記事。',
   '不要記事 使用されていないタグ',
-] as const;
-
-const highFrequencyInvalidSummaries = [
   '不要記事 使用されていないタグ',
   '一連の乱立立て逃げ記事です。',
   '自演記事。',
@@ -136,9 +133,6 @@ const highFrequencyInvalidSummaries = [
   '※記事内容に問題があったため白紙化しております。',
   'この記事は初版執筆者本人あるいは要請により内容を削除し、白紙化しております。詳細な内容に関しては確認しないでください。 もし、別目的でタグとして利用されているなど、必要な場合は差し戻しを行わず新たに',
   '荒らし記事',
-] as const;
-
-const requestedInvalidSummaries = [
   '荒らし記事につき削除いたしました。',
   '**この記事は【[[名言]]】一覧記事の肥大化に伴い白紙化されました**',
   '記事内容を削除いたしました',
@@ -218,9 +212,6 @@ const requestedInvalidSummaries = [
   '不要記事につき排除。',
   '不要記事のため白紙化いたしました。',
   '本記事は、自作自演記事につき、このような悪例が増えることを防止する目的で撤去されました。',
-] as const;
-
-const newlyReportedInvalidSummaries = [
   '【 情報削除済 】',
   '【不要記事: タグが使用されていない、需要が限定的である】新規の記事を作るには、タグや重複してないか、ピクシブ百科事典に合うのかを考えて記事を作ってください。',
   '【不要記事:記事の重複や乱立、ガイドライン違反】新規の記事を作るには、タグや重複してないか、ピクシブ百科事典に合うのかを考えて記事を作ってください。',
@@ -338,14 +329,7 @@ describe('isValidArticle', () => {
   });
 
   it('rejects invalid summaries', () => {
-    const allInvalidSummaries = [
-      ...invalidSummaries,
-      ...highFrequencyInvalidSummaries,
-      ...requestedInvalidSummaries,
-      ...newlyReportedInvalidSummaries,
-    ];
-
-    const uniqueInvalidSummaries = [...new Set(allInvalidSummaries)];
+    const uniqueInvalidSummaries = [...new Set(invalidSummaries)];
     assertSummaryGroupValidity(
       uniqueInvalidSummaries,
       false,
