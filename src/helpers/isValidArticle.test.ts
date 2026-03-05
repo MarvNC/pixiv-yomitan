@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'bun:test';
+import { describe, it } from 'bun:test';
 import type { PixivArticle } from '@prisma/client';
 
 import { isValidArticle } from './isValidArticle';
@@ -24,248 +24,227 @@ function createArticle(overrides: Partial<PixivArticle> = {}): PixivArticle {
   };
 }
 
-function expectSummaryToBeInvalid(summary: string): void {
+function assertSummaryValidity(
+  summary: string,
+  expectedValid: boolean,
+  group: string
+): void {
   const article = createArticle({ summary });
-  expect(isValidArticle(article)).toBe(false);
+  const actualValid = isValidArticle(article);
+
+  if (actualValid !== expectedValid) {
+    const expectedState = expectedValid ? 'valid' : 'invalid';
+    const actualState = actualValid ? 'valid' : 'invalid';
+    throw new Error(
+      `[${group}] expected ${expectedState}, got ${actualState} | summary: ${summary}`
+    );
+  }
 }
 
-function expectSummaryToBeValid(summary: string): void {
-  const article = createArticle({ summary });
-  expect(isValidArticle(article)).toBe(true);
-}
+const validSummaries = [
+  'ーーー更新あり',
+  '削除番長、ニコニコ動画にて二番目に古い動画。',
+  '削除記事とは、不要記事・荒らし記事の成れの果て。',
+  'ここでは主にピクシブ百科事典で不要記事とされがちな種類の記事について説明する。',
+  '削除とは、不要記事につき削除',
+  'ステロイド外用薬の一種。(※悪質ユーザーによる立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。)',
+  'ゲーム「クライミライ」シリーズの第3弾。（※悪質ユーザーによる立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。）',
+  'ゲーム「エルミナージュ異聞アメノミハシラ」の登場キャラクター。(※悪質ユーザーによる立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。)',
+  'Minecraftで削除されたMob。',
+  'ソニックフロンティアにおける天の声。ネタバレの都合上、ここではひとまず天の声と呼称する。名称が安定しないため討論の発生・場合によっては白紙化する可能性あり。',
+  '隔離記事（pixiv）の項目を参照',
+  '日本の国家資格・職業の一つ。(※悪質ユーザーによる立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。)',
+] as const;
+
+const invalidSummaries = [
+  '立て逃げ記事',
+  '※立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。',
+  '(※悪質ユーザーによる立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。)',
+  '立て逃げ記事につき、編集待ち。',
+  '立て逃げ記事につき撤去。',
+  '立て逃げ記事により、編集待ち。',
+  '立て逃げ記事かつ長期にわたっての管理が困難なため白紙化されました。',
+  '削除しました。。。',
+  '  ーーー  ',
+  '自演記事です。白紙化。',
+  '著作権侵害につき削除。',
+  '意味を成さない記事なので除去',
+  '※現在使われていないタグです。',
+  '不要記事につき、削除します。',
+  '荒し記事である為削除',
+  '自演記事につき白紙化',
+  '名前を間違えたため白紙化',
+  '白紙化された記事です',
+  '不要記事につき白紙化しました。',
+  '誤記です。不要記事。、、',
+  '誤記。不要記事に、、',
+  'タイトルミスのため不要記事に該当します。',
+  'pixiv百科事典のガイドラインに違反してると判断したため、不要記事にさせていただきます。',
+  'この記事は白紙化しました。',
+  'ただの自己紹介の為白紙化',
+  '自演のため白紙化しました。',
+  '情報がない記事のため白紙化。',
+  '自演記事なので白紙化しました。',
+  '内容のない記事であるため白紙化。',
+  '規約違反記事のため白紙化しました。',
+  '記事作成ミスのため白紙化。',
+  'タグとしての使用例が無いため白紙化',
+  '削除申請済みですが不安なので白紙化しています',
+  '誤って作成した記事であるため白紙化致しました',
+  '一連の乱立立て逃げ記事です。',
+  '※タグとしての需要がないため、記事内容を白紙化しております。',
+  'ただの荒らし記事です',
+  '自演記事。',
+  '不要記事 使用されていないタグ',
+] as const;
+
+const highFrequencyInvalidSummaries = [
+  '不要記事 使用されていないタグ',
+  '一連の乱立立て逃げ記事です。',
+  '自演記事。',
+  'この記事は現在タグとしての使用がないため記事内容を削除してあります',
+  '※タグとしての需要がないため、記事内容を白紙化しております。',
+  'この記事は削除されました。',
+  '削除されました',
+  '不必要記事につき削除されました',
+  '当記事は「吐き気を催す邪悪纏め」の議論により白紙化が決定しました。',
+  '※記事としての需要がないため、記事内容を白紙化しております。',
+  'この記事は削除されました',
+  'この記事は白紙化されています',
+  '自作自演記事につき削除されました。',
+  '自作自演記事につき削除されました',
+  '※記事内容に問題があったため白紙化しております。',
+  'この記事は初版執筆者本人あるいは要請により内容を削除し、白紙化しております。詳細な内容に関しては確認しないでください。 もし、別目的でタグとして利用されているなど、必要な場合は差し戻しを行わず新たに',
+  '荒らし記事',
+] as const;
+
+const requestedInvalidSummaries = [
+  '荒らし記事につき削除いたしました。',
+  '**この記事は【[[名言]]】一覧記事の肥大化に伴い白紙化されました**',
+  '記事内容を削除いたしました',
+  '審議により白紙化となりました。安易な復旧は通報対象となる可能性が高いため、控えさせていただきますようお願いします。',
+  '白紙化された記事。',
+  '削除済みの記事です。',
+  'この記事は現在タグとしての使用がないため記事内容を削除してあります 記事の復元を行う場合はタグとしての使用があった場合、もしくは説明として必要となった場合に復元をしていただくようによろしくお願いします',
+  '不要記事 ㅤ',
+  'この記事は白紙化がおこなわれました',
+  '白紙化による記事です',
+  '不要記事です。',
+  'この記事は白紙化記事です。',
+  '記事タイトルが間違っていたため記事を削除させていただきました。',
+  '削除いたしました。',
+  'タグとして使用されていないため、不要記事と判断します。',
+  '削除・・・・・・・・・',
+  '削除済み',
+  'この記事は諸事情により白紙化とさせていただきます。',
+  'この記事は白紙化記事です',
+  'この記事は不要記事です',
+  '荒らしユーザー（仮名）の複アカウントによる立て逃げ荒らし記事です。通報の協力をお願いします。 本記事はただいま執筆依頼提出中です。正しい記事内容を作成できる方は記事の執筆をお願い致します。',
+  '削除・・・・・・',
+  '削除・・・・・・・・・・・・・・',
+  '削除記事',
+  '審議により白紙化となりました。安易な復旧は通報対象となる可能性が高いため、控えていただきますようお願いします。',
+  '投稿作品が記事を作成したユーザー本人のものしか存在せず、宣伝行為を含む自作自演の記事として白紙化いたします。',
+  '・・・・削除した記事',
+  '()が全角のため、削除希望',
+  '(この記事は削除されました)',
+  '【タグ作成者により白紙化済】 当タグには解説記事が不要の為、タグを作成・利用者である作者本人の手で、内容情報を削除させて頂きました。 以降の編集はおやめください。',
+  '**この記事は【[[名言]]】一覧記事の肥大化に伴い白紙化されました** 一覧をご覧になりたい方は名言投稿サイト『quote』へどうぞ。',
+  '**この記事は【名言】一覧記事の肥大化に伴い白紙化されました**',
+  '※ただいまこの記事は記事内容に問題があり一旦白紙化しております。',
+  '※本記事は複数の問題が確認された為、削除依頼を提出中です。',
+  'pixivと無関係の記事、白紙化を行いました。',
+  'この記事はプライバシー権を侵害している為削除いたしました。',
+  'この記事は削除させていただきました',
+  'この記事は白紙化がおこなわれています',
+  'この記事は白紙化にしました。',
+  'この記事は不要記事です。',
+  'この記事は編集合戦の度重なる発生及び、独自研究に該当する恐れがある為白紙化にします。',
+  'すでにpixiv百科内に記事が存在したため、一旦記事を白紙化ー',
+  'タグとして機能していないので不要記事です',
+  'リンク名ミスによる移転、または削除待つ記事',
+  '一旦、白紙化にしています。',
+  '一旦白紙化にしています。',
+  '該当の記事はpixivおよびピクシブ百科事典において不要とみなされ、必要性の低い不要記事として内容を削除し、白紙化しております。',
+  '記事の削除を運営に依頼中',
+  '記事の白紙化を行いました。',
+  '記事本文は削除いたしました。',
+  '虚偽の内容となっている乱立記事につき削除。実在する場合は記事を作り直してください。',
+  '原作者様の意向を反映し、白紙化いたしました',
+  '現時点では不要記事です。',
+  '誤記のため、不要記事です。',
+  '誤情報につき本人削除済み記事',
+  '誤表記の為白紙化した',
+  '削除・・・・・・・',
+  '削除・・・・・・・・',
+  '削除させていただきました。',
+  '削除させて頂きました',
+  '諸事情により白紙化しました 削除お願いします',
+  '正式な名称でないため削除された記事です。',
+  '宣伝記事につき削除。第９条 禁止行為(12)に違反している可能性。',
+  '他記事からのコピペ記事につき白紙化処理',
+  '注意：この項目は諸々の事情により、唐突に削除される可能性があります。',
+  '長きに亘り数万以上のユーザーに閲覧されてきた記事ですが、様々な観点や審議により白紙化となりました。',
+  '桃鬼（賽鬼）→桃鬼(hpmi) ※この記事は削除依頼中です',
+  '当記事は現在pixivのタグとして使用されておらず、他のユーザーの合意もなく分割されたため、内容を削除し白紙化しております。',
+  '内容の削除。 追加は自由',
+  '白紙化した記事です。',
+  '白紙化にしています。',
+  '白紙化を行いました。',
+  '不適切なタイトル記事のため白紙化。',
+  '不適切な内容であったため削除いたしました',
+  '不要記事。 全角のカッコを含むタイトルはタグとして使用不可であるため...',
+  '不要記事につき削除依頼',
+  '不要記事につき排除。',
+  '不要記事のため白紙化いたしました。',
+  '本記事は、自作自演記事につき、このような悪例が増えることを防止する目的で撤去されました。',
+] as const;
+
+const invalidHeaderCases = [
+  ['カテゴリ', '荒らし記事', '末端カテゴリ'],
+  ['カテゴリ', '荒らし記事'],
+  ['カテゴリ', '不要記事'],
+  ['カテゴリ', '不要記事', '末端カテゴリ'],
+] as const;
 
 describe('isValidArticle', () => {
-  describe('valid articles', () => {
-    it('returns true for a normal article', () => {
-      const article = createArticle();
-      expect(isValidArticle(article)).toBe(true);
-    });
-
-    it('returns true for summaries containing non-dash text', () => {
-      expectSummaryToBeValid('ーーー更新あり');
-    });
-
-    it('keeps explanatory text that starts with 削除 as a term name', () => {
-      expectSummaryToBeValid('削除番長、ニコニコ動画にて二番目に古い動画。');
-    });
-
-    it('keeps summary: 削除記事とは、不要記事・荒らし記事の成れの果て。', () => {
-      expectSummaryToBeValid('削除記事とは、不要記事・荒らし記事の成れの果て。');
-    });
-
-    it('keeps summary: ここでは主にピクシブ百科事典で不要記事とされがちな種類の記事について説明する。', () => {
-      expectSummaryToBeValid(
-        'ここでは主にピクシブ百科事典で不要記事とされがちな種類の記事について説明する。'
-      );
-    });
-
-    it('keeps summaries containing とは automatically', () => {
-      expectSummaryToBeValid('削除とは、不要記事につき削除');
-    });
-
-    it('keeps factual summaries even when filtered phrases are only in parentheses', () => {
-      expectSummaryToBeValid(
-        'ステロイド外用薬の一種。(※悪質ユーザーによる立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。)'
-      );
-    });
-
-    it('keeps factual summaries with full-width parenthesized moderation notes', () => {
-      expectSummaryToBeValid(
-        'ゲーム「クライミライ」シリーズの第3弾。（※悪質ユーザーによる立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。）'
-      );
-    });
-
+  it('keeps default normal article as valid', () => {
+    const article = createArticle();
+    const actualValid = isValidArticle(article);
+    if (!actualValid) {
+      throw new Error('default article should be valid');
+    }
   });
 
-  describe('invalid articles', () => {
-    it('returns false when parent categories include a troll category', () => {
-      const article = createArticle({
-        header: JSON.stringify(['カテゴリ', '荒らし記事', '末端カテゴリ']),
-      });
-      expect(isValidArticle(article)).toBe(false);
-    });
+  it('rejects filtered categories from headers', () => {
+    for (const headers of invalidHeaderCases) {
+      const article = createArticle({ header: JSON.stringify(headers) });
+      const actualValid = isValidArticle(article);
+      if (actualValid) {
+        throw new Error(
+          `[headers] expected invalid, got valid | headers: ${JSON.stringify(headers)}`
+        );
+      }
+    }
+  });
 
-    it('returns false when troll category is the last header item', () => {
-      const article = createArticle({
-        header: JSON.stringify(['カテゴリ', '荒らし記事']),
-      });
-      expect(isValidArticle(article)).toBe(false);
-    });
+  it('keeps valid summaries', () => {
+    for (const summary of validSummaries) {
+      assertSummaryValidity(summary, true, 'valid summary');
+    }
+  });
 
-    it('returns false when filtered category is the last header item', () => {
-      const article = createArticle({
-        header: JSON.stringify(['カテゴリ', '不要記事']),
-      });
-      expect(isValidArticle(article)).toBe(false);
-    });
+  it('rejects invalid summaries', () => {
+    const allInvalidSummaries = [
+      ...invalidSummaries,
+      ...highFrequencyInvalidSummaries,
+      ...requestedInvalidSummaries,
+    ];
 
-    it('returns false when parent categories include 不要記事', () => {
-      const article = createArticle({
-        header: JSON.stringify(['カテゴリ', '不要記事', '末端カテゴリ']),
-      });
-      expect(isValidArticle(article)).toBe(false);
-    });
-
-    it('returns false for standalone 立て逃げ記事 summary', () => {
-      expectSummaryToBeInvalid('立て逃げ記事');
-    });
-
-    it('returns false for 立て逃げ記事 summary with moderation note', () => {
-      expectSummaryToBeInvalid(
-        '※立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。'
-      );
-    });
-
-    it('returns false when summary is only a parenthesized moderation note', () => {
-      expectSummaryToBeInvalid(
-        '(※悪質ユーザーによる立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。)'
-      );
-    });
-
-    it('deletes summary: 立て逃げ記事につき、編集待ち。', () => {
-      expectSummaryToBeInvalid('立て逃げ記事につき、編集待ち。');
-    });
-
-    it('deletes summary: 立て逃げ記事につき撤去。', () => {
-      expectSummaryToBeInvalid('立て逃げ記事につき撤去。');
-    });
-
-    it('deletes summary: 立て逃げ記事により、編集待ち。', () => {
-      expectSummaryToBeInvalid('立て逃げ記事により、編集待ち。');
-    });
-
-    it('deletes summary: 立て逃げ記事かつ長期にわたっての管理が困難なため白紙化されました。', () => {
-      expectSummaryToBeInvalid('立て逃げ記事かつ長期にわたっての管理が困難なため白紙化されました。');
-    });
-
-    it('returns false for invalid summary fragments with trailing 。', () => {
-      expectSummaryToBeInvalid('削除しました。。。');
-    });
-
-    it('returns false for dash-only summaries after trim', () => {
-      expectSummaryToBeInvalid('  ーーー  ');
-    });
-
-    it('deletes summaries ending with standalone 白紙化', () => {
-      expectSummaryToBeInvalid('自演記事です。白紙化。');
-    });
-
-    it('deletes summary: 著作権侵害につき削除。', () => {
-      expectSummaryToBeInvalid('著作権侵害につき削除。');
-    });
-
-    it('deletes summary: 意味を成さない記事なので除去', () => {
-      expectSummaryToBeInvalid('意味を成さない記事なので除去');
-    });
-
-    it('deletes summary: ※現在使われていないタグです。', () => {
-      expectSummaryToBeInvalid('※現在使われていないタグです。');
-    });
-
-    it('deletes summary: 不要記事につき、削除します。', () => {
-      expectSummaryToBeInvalid('不要記事につき、削除します。');
-    });
-
-    it('deletes summary: 荒し記事である為削除', () => {
-      expectSummaryToBeInvalid('荒し記事である為削除');
-    });
-
-    it('deletes summary: 自演記事につき白紙化', () => {
-      expectSummaryToBeInvalid('自演記事につき白紙化');
-    });
-
-    it('deletes summary: 名前を間違えたため白紙化', () => {
-      expectSummaryToBeInvalid('名前を間違えたため白紙化');
-    });
-
-    it('deletes summary: 白紙化された記事です', () => {
-      expectSummaryToBeInvalid('白紙化された記事です');
-    });
-
-    it('deletes summary: 不要記事につき白紙化しました。', () => {
-      expectSummaryToBeInvalid('不要記事につき白紙化しました。');
-    });
-
-    it('deletes summary: 誤記です。不要記事。、、', () => {
-      expectSummaryToBeInvalid('誤記です。不要記事。、、');
-    });
-
-    it('deletes summary: 誤記。不要記事に、、', () => {
-      expectSummaryToBeInvalid('誤記。不要記事に、、');
-    });
-
-    it('deletes summary: タイトルミスのため不要記事に該当します。', () => {
-      expectSummaryToBeInvalid('タイトルミスのため不要記事に該当します。');
-    });
-
-    it('deletes summary: pixiv百科事典のガイドラインに違反してると判断したため、不要記事にさせていただきます。', () => {
-      expectSummaryToBeInvalid(
-        'pixiv百科事典のガイドラインに違反してると判断したため、不要記事にさせていただきます。'
-      );
-    });
-
-    it('deletes summary: この記事は白紙化しました。', () => {
-      expectSummaryToBeInvalid('この記事は白紙化しました。');
-    });
-
-    it('deletes summary: ただの自己紹介の為白紙化', () => {
-      expectSummaryToBeInvalid('ただの自己紹介の為白紙化');
-    });
-
-    it('deletes summary: 自演のため白紙化しました。', () => {
-      expectSummaryToBeInvalid('自演のため白紙化しました。');
-    });
-
-    it('deletes summary: 情報がない記事のため白紙化。', () => {
-      expectSummaryToBeInvalid('情報がない記事のため白紙化。');
-    });
-
-    it('deletes summary: 自演記事なので白紙化しました。', () => {
-      expectSummaryToBeInvalid('自演記事なので白紙化しました。');
-    });
-
-    it('deletes summary: 内容のない記事であるため白紙化。', () => {
-      expectSummaryToBeInvalid('内容のない記事であるため白紙化。');
-    });
-
-    it('deletes summary: 規約違反記事のため白紙化しました。', () => {
-      expectSummaryToBeInvalid('規約違反記事のため白紙化しました。');
-    });
-
-    it('deletes summary: 記事作成ミスのため白紙化。', () => {
-      expectSummaryToBeInvalid('記事作成ミスのため白紙化。');
-    });
-
-    it('deletes summary: タグとしての使用例が無いため白紙化', () => {
-      expectSummaryToBeInvalid('タグとしての使用例が無いため白紙化');
-    });
-
-    it('deletes summary: 削除申請済みですが不安なので白紙化しています', () => {
-      expectSummaryToBeInvalid('削除申請済みですが不安なので白紙化しています');
-    });
-
-    it('deletes summary: 誤って作成した記事であるため白紙化致しました', () => {
-      expectSummaryToBeInvalid('誤って作成した記事であるため白紙化致しました');
-    });
-
-    it('deletes summary: 一連の乱立立て逃げ記事です。', () => {
-      expectSummaryToBeInvalid('一連の乱立立て逃げ記事です。');
-    });
-
-    it('deletes summary: ※タグとしての需要がないため、記事内容を白紙化しております。', () => {
-      expectSummaryToBeInvalid('※タグとしての需要がないため、記事内容を白紙化しております。');
-    });
-
-    it('deletes summary: ただの荒らし記事です', () => {
-      expectSummaryToBeInvalid('ただの荒らし記事です');
-    });
-
-    it('deletes summary: 自演記事。', () => {
-      expectSummaryToBeInvalid('自演記事。');
-    });
-
-    it('deletes summary: 不要記事 使用されていないタグ', () => {
-      expectSummaryToBeInvalid('不要記事 使用されていないタグ');
-    });
+    const uniqueInvalidSummaries = [...new Set(allInvalidSummaries)];
+    for (const summary of uniqueInvalidSummaries) {
+      assertSummaryValidity(summary, false, 'invalid summary');
+    }
   });
 });
+
