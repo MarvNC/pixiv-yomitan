@@ -125,12 +125,21 @@ const INVALID_SUMMARY_PATTERNS: readonly RegExp[] = [
 ] as const;
 
 
-function parseHeaders(header: string | null): string[] {
-  const parsedHeaders: unknown = JSON.parse(header || '[]');
-  if (!Array.isArray(parsedHeaders)) {
-    throw new Error(`Invalid headers: ${header}`);
+type ParsedHeaders = {
+  headers: string[];
+  parseFailed: boolean;
+};
+
+function parseHeaders(header: string | null): ParsedHeaders {
+  try {
+    const parsedHeaders: unknown = JSON.parse(header ?? '[]');
+    if (!Array.isArray(parsedHeaders)) {
+      return { headers: [], parseFailed: true };
+    }
+    return { headers: parsedHeaders as string[], parseFailed: false };
+  } catch {
+    return { headers: [], parseFailed: true };
   }
-  return parsedHeaders as string[];
 }
 
 function normalizeSummary(summary: string): string {
@@ -180,7 +189,11 @@ function hasFilteredParentCategory(
 }
 
 export function isValidArticle(article: PixivArticle): boolean {
-  const headers = parseHeaders(article.header);
+  const { headers, parseFailed } = parseHeaders(article.header);
+  if (parseFailed) {
+    return false;
+  }
+
   if (hasFilteredParentCategory(headers, article.tag_name)) {
     return false;
   }

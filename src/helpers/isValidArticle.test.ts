@@ -369,6 +369,22 @@ describe('isValidArticle', () => {
     }
   });
 
+  it('rejects article when header is malformed JSON', () => {
+    const article = createArticle({ header: '[' });
+    const actualValid = isValidArticle(article);
+    if (actualValid) {
+      throw new Error('expected invalid for malformed header JSON');
+    }
+  });
+
+  it('rejects article when header JSON is not an array', () => {
+    const article = createArticle({ header: JSON.stringify({ foo: 'bar' }) });
+    const actualValid = isValidArticle(article);
+    if (actualValid) {
+      throw new Error('expected invalid for non-array header JSON');
+    }
+  });
+
   it('keeps category article valid when last header equals tag name', () => {
     const article = createArticle({
       tag_name: '荒らし記事',
