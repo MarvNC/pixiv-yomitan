@@ -48,6 +48,13 @@ describe('isValidArticle', () => {
       expect(isValidArticle(article)).toBe(true);
     });
 
+    it('returns true when filtered category is only the last header item', () => {
+      const article = createArticle({
+        header: JSON.stringify(['カテゴリ', '不要記事']),
+      });
+      expect(isValidArticle(article)).toBe(true);
+    });
+
     it('returns true for non-exact summaries that start with invalid fragments', () => {
       expectSummaryToBeValid('削除しましたが復旧済みです');
     });
@@ -70,8 +77,18 @@ describe('isValidArticle', () => {
       expectSummaryToBeValid('削除記事とは、不要記事・荒らし記事の成れの果て。');
     });
 
+    it('keeps summary: ここでは主にピクシブ百科事典で不要記事とされがちな種類の記事について説明する。', () => {
+      expectSummaryToBeValid(
+        'ここでは主にピクシブ百科事典で不要記事とされがちな種類の記事について説明する。'
+      );
+    });
+
     it('keeps summaries containing とは automatically', () => {
       expectSummaryToBeValid('削除とは、不要記事につき削除');
+    });
+
+    it('keeps summary: ※立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。', () => {
+      expectSummaryToBeValid('※立て逃げ記事。執筆依頼提出中につき、正しい記事内容を作成できる方は記事の執筆をお願い致します。');
     });
   });
 
@@ -79,6 +96,13 @@ describe('isValidArticle', () => {
     it('returns false when parent categories include a troll category', () => {
       const article = createArticle({
         header: JSON.stringify(['カテゴリ', '荒らし記事', '末端カテゴリ']),
+      });
+      expect(isValidArticle(article)).toBe(false);
+    });
+
+    it('returns false when parent categories include 不要記事', () => {
+      const article = createArticle({
+        header: JSON.stringify(['カテゴリ', '不要記事', '末端カテゴリ']),
       });
       expect(isValidArticle(article)).toBe(false);
     });
@@ -100,6 +124,10 @@ describe('isValidArticle', () => {
       expectSummaryToBeInvalid('立て逃げ記事につき撤去。');
     });
 
+    it('deletes summary: 立て逃げ記事により、編集待ち。', () => {
+      expectSummaryToBeInvalid('立て逃げ記事により、編集待ち。');
+    });
+
     it('deletes summary: 立て逃げ記事かつ長期にわたっての管理が困難なため白紙化されました。', () => {
       expectSummaryToBeInvalid('立て逃げ記事かつ長期にわたっての管理が困難なため白紙化されました。');
     });
@@ -118,6 +146,14 @@ describe('isValidArticle', () => {
 
     it('deletes summary: 著作権侵害につき削除。', () => {
       expectSummaryToBeInvalid('著作権侵害につき削除。');
+    });
+
+    it('deletes summary: 意味を成さない記事なので除去', () => {
+      expectSummaryToBeInvalid('意味を成さない記事なので除去');
+    });
+
+    it('deletes summary: ※現在使われていないタグです。', () => {
+      expectSummaryToBeInvalid('※現在使われていないタグです。');
     });
 
     it('deletes summary: 不要記事につき、削除します。', () => {
@@ -142,6 +178,24 @@ describe('isValidArticle', () => {
 
     it('deletes summary: 不要記事につき白紙化しました。', () => {
       expectSummaryToBeInvalid('不要記事につき白紙化しました。');
+    });
+
+    it('deletes summary: 誤記です。不要記事。、、', () => {
+      expectSummaryToBeInvalid('誤記です。不要記事。、、');
+    });
+
+    it('deletes summary: 誤記。不要記事に、、', () => {
+      expectSummaryToBeInvalid('誤記。不要記事に、、');
+    });
+
+    it('deletes summary: タイトルミスのため不要記事に該当します。', () => {
+      expectSummaryToBeInvalid('タイトルミスのため不要記事に該当します。');
+    });
+
+    it('deletes summary: pixiv百科事典のガイドラインに違反してると判断したため、不要記事にさせていただきます。', () => {
+      expectSummaryToBeInvalid(
+        'pixiv百科事典のガイドラインに違反してると判断したため、不要記事にさせていただきます。'
+      );
     });
 
     it('deletes summary: この記事は白紙化しました。', () => {
