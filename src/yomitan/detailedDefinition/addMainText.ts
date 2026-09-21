@@ -6,7 +6,10 @@ export function addMainText(
   article: PixivArticle,
   scList: StructuredContentNode[],
 ) {
-  if (!article.mainText) {
+  // Some historical scrape results start with blank lines when the article
+  // has no abstract. Keep all other whitespace and paragraph breaks intact.
+  const mainText = article.mainText?.replace(/^[\r\n]+/, '');
+  if (!mainText) {
     return;
   }
   scList.push(
@@ -19,7 +22,7 @@ export function addMainText(
       },
     },
     createUlElement({
-      content: article.mainText,
+      content: mainText,
       data: { pixiv: 'main-text' },
       style: {
         listStyleType: 'none',
