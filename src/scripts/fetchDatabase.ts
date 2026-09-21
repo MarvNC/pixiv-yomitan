@@ -1,10 +1,12 @@
-import { mkdir, writeFile } from 'fs/promises';
+import { mkdir, rm, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
+import { PrismaClient } from '@prisma/client';
 
 const PIXIV_DUMP_REPO = 'MarvNC/pixiv-dump';
 const DB_FILENAME = 'pixiv.db';
 const DB_DIR = join(process.cwd(), 'db');
+const MINIMUM_ARTICLE_COUNT = 700_000;
 
 interface GitHubAsset {
   name: string;
@@ -14,6 +16,31 @@ interface GitHubAsset {
 
 interface GitHubRelease {
   assets: GitHubAsset[];
+}
+
+async function validateDatabase(dbPath: string) {
+  const prisma = new PrismaClient();
+  try {
+    const integrityRows = await prisma.$queryRawUnsafe<
+      Array<{ integrity_check: string }>
+    >('PRAGMA integrity_check;');
+    if (integrityRows[0]?.integrity_check !== 'ok') {
+      throw new Error('Downloaded database failed SQLite integrity_check');
+    }
+
+    const articleCount = await prisma.pixivArticle.count();
+    console.log(`Database contains ${articleCount} articles`);
+    if (articleCount < MINIMUM_ARTICLE_COUNT) {
+      throw new Error(
+        `Database contains only ${articleCount} articles; expected at least ${MINIMUM_ARTICLE_COUNT}`,
+      );
+    }
+  } catch (error) {
+    await rm(dbPath, { force: true });
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 /**
@@ -33,7 +60,8 @@ async function fetchDatabase() {
     // Check if database already exists
     if (existsSync(dbPath)) {
       console.log('Database already exists at:', dbPath);
-      console.log('Skipping download. Delete the file to re-download.');
+      await validateDatabase(dbPath);
+      console.log('Skipping download after validating existing database.');
       return;
     }
 
@@ -77,8 +105,9 @@ async function fetchDatabase() {
     const buffer = Buffer.from(arrayBuffer);
 
     await writeFile(dbPath, buffer);
+    await validateDatabase(dbPath);
 
-    console.log(`✓ Database downloaded successfully to: ${dbPath}`);
+    console.log(`✓ Database downloaded and validated successfully to: ${dbPath}`);
   } catch (error) {
     console.error('Error fetching database:', error);
     process.exit(1);

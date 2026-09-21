@@ -34,7 +34,7 @@ jobs:
           bun run buildPixivLight -- --tagName ${{ steps.date.outputs.date }}
 
       - name: Create and Publish Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: dist/*
           tag_name: ${{ steps.date.outputs.date }}
