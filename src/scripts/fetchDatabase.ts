@@ -107,7 +107,9 @@ async function fetchDatabase() {
     await writeFile(dbPath, buffer);
     await validateDatabase(dbPath);
 
-    console.log(`✓ Database downloaded and validated successfully to: ${dbPath}`);
+    console.log(
+      `✓ Database downloaded and validated successfully to: ${dbPath}`,
+    );
   } catch (error) {
     console.error('Error fetching database:', error);
     process.exit(1);
