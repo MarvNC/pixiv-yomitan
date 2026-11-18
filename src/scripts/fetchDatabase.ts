@@ -70,7 +70,17 @@ async function fetchDatabase() {
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
 
     console.log(`Fetching release info from: ${apiUrl}`);
-    const releaseResponse = await fetch(apiUrl);
+    const headers: Record<string, string> = {
+      Accept: 'application/vnd.github+json',
+    };
+    if (process.env.GITHUB_TOKEN) {
+      headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+    }
+    const releaseResponse = await fetch(apiUrl, {
+      headers,
+      // Keep the token on this API endpoint, never on a redirected download.
+      redirect: 'error',
+    });
 
     if (!releaseResponse.ok) {
       throw new Error(
